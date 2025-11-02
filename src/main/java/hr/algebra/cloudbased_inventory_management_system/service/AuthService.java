@@ -5,6 +5,7 @@ import hr.algebra.cloudbased_inventory_management_system.dto.LoginRequest;
 import hr.algebra.cloudbased_inventory_management_system.dto.UserResponse;
 import hr.algebra.cloudbased_inventory_management_system.entity.User;
 import hr.algebra.cloudbased_inventory_management_system.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@RequiredArgsConstructor
 public class AuthService {
 
     private final AuthenticationManager authenticationManager;
@@ -23,20 +25,6 @@ public class AuthService {
     private final UserRepository userRepository;
     private final CustomUserDetailsService userDetailsService;
     private final UserMapper userMapper;
-
-    public AuthService(AuthenticationManager authenticationManager,
-                       JwtService jwtService,
-                       UserService userService,
-                       UserRepository userRepository,
-                       CustomUserDetailsService userDetailsService,
-                       UserMapper userMapper) {
-        this.authenticationManager = authenticationManager;
-        this.jwtService = jwtService;
-        this.userService = userService;
-        this.userRepository = userRepository;
-        this.userDetailsService = userDetailsService;
-        this.userMapper = userMapper;
-    }
 
     @Transactional
     public AuthResponse authenticate(LoginRequest request) {
@@ -49,7 +37,11 @@ public class AuthService {
         UserDetails principal = (UserDetails) authentication.getPrincipal();
         String token = jwtService.generateToken(principal);
         UserResponse userResponse = userMapper.toResponse(user);
-        return new AuthResponse(token, user.getRole(), userResponse);
+        return AuthResponse.builder()
+                .token(token)
+                .role(user.getRole())
+                .user(userResponse)
+                .build();
     }
 
     @Transactional(readOnly = true)
@@ -70,6 +62,10 @@ public class AuthService {
         }
 
         String refreshedToken = jwtService.generateToken(userDetails);
-        return new AuthResponse(refreshedToken, user.getRole(), userMapper.toResponse(user));
+        return AuthResponse.builder()
+                .token(refreshedToken)
+                .role(user.getRole())
+                .user(userMapper.toResponse(user))
+                .build();
     }
 }

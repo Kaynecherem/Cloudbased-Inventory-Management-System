@@ -4,10 +4,11 @@ import hr.algebra.cloudbased_inventory_management_system.dto.AuthResponse;
 import hr.algebra.cloudbased_inventory_management_system.dto.ForgotPasswordRequest;
 import hr.algebra.cloudbased_inventory_management_system.dto.LoginRequest;
 import hr.algebra.cloudbased_inventory_management_system.dto.RefreshTokenRequest;
+import hr.algebra.cloudbased_inventory_management_system.entity.User;
 import hr.algebra.cloudbased_inventory_management_system.service.AuthService;
 import hr.algebra.cloudbased_inventory_management_system.service.UserService;
-import hr.algebra.cloudbased_inventory_management_system.entity.User;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,15 +19,11 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
+@RequiredArgsConstructor
 public class AuthController {
 
     private final AuthService authService;
     private final UserService userService;
-
-    public AuthController(AuthService authService, UserService userService) {
-        this.authService = authService;
-        this.userService = userService;
-    }
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {

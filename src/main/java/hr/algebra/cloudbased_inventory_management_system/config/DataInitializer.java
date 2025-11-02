@@ -3,20 +3,17 @@ package hr.algebra.cloudbased_inventory_management_system.config;
 import hr.algebra.cloudbased_inventory_management_system.entity.Role;
 import hr.algebra.cloudbased_inventory_management_system.entity.User;
 import hr.algebra.cloudbased_inventory_management_system.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class DataInitializer implements CommandLineRunner {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-
-    public DataInitializer(UserRepository userRepository, PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
 
     @Override
     public void run(String... args) {
@@ -29,13 +26,14 @@ public class DataInitializer implements CommandLineRunner {
             return;
         }
 
-        User user = new User();
-        user.setUsername(username);
-        user.setEmail(email);
-        user.setFirstName(firstName);
-        user.setLastName(lastName);
-        user.setRole(role);
-        user.setPassword(passwordEncoder.encode("password"));
+        User user = User.builder()
+                .username(username)
+                .email(email)
+                .firstName(firstName)
+                .lastName(lastName)
+                .role(role)
+                .password(passwordEncoder.encode("password"))
+                .build();
         userRepository.save(user);
     }
 }
