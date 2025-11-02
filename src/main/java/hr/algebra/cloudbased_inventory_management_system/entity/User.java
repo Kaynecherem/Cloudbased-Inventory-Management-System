@@ -57,12 +57,12 @@ public class User {
             base.append(firstName.strip().toLowerCase(Locale.ROOT));
         }
         if (lastName != null && !lastName.isBlank()) {
-            if (base.length() > 0) {
+            if (!base.isEmpty()) {
                 base.append('.');
             }
             base.append(lastName.strip().toLowerCase(Locale.ROOT));
         }
-        if (base.length() == 0) {
+        if (base.isEmpty()) {
             base.append("user");
         }
         base.append('-').append(UUID.randomUUID().toString().substring(0, 8));
