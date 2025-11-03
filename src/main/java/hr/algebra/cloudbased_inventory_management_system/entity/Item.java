@@ -1,17 +1,17 @@
 package hr.algebra.cloudbased_inventory_management_system.entity;
 
-import jakarta.persistence.Entity;
 import jakarta.persistence.*;
-import jakarta.persistence.Table;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
+import java.math.BigDecimal;
+import java.time.Instant;
 
 @Entity
 @Table(name = "items")
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 public class Item {
 
@@ -26,7 +26,43 @@ public class Item {
     private String name;
 
     private String category;
+
+    @Column(nullable = false)
     private String unit;
-    private Double quantity;
-    private Double minLevel;
+
+    @Column(name = "current_qty", precision = 19, scale = 2, nullable = false)
+    private BigDecimal currentQty;
+
+    @Column(name = "min_level", precision = 19, scale = 2)
+    private BigDecimal minLevel;
+
+    @Column(name = "location_id")
+    private Long locationId;
+
+    @Column(name = "primary_supplier_id")
+    private Long primarySupplierId;
+
+    @Column(nullable = false)
+    private Boolean isActive;
+
+    @Column(nullable = false, updatable = false)
+    private Instant createdAt;
+
+    @Column(nullable = false)
+    private Instant updatedAt;
+
+    @PrePersist
+    public void onCreate() {
+        Instant now = Instant.now();
+        createdAt = now;
+        updatedAt = now;
+        if (isActive == null) {
+            isActive = Boolean.TRUE;
+        }
+    }
+
+    @PreUpdate
+    public void onUpdate() {
+        updatedAt = Instant.now();
+    }
 }
