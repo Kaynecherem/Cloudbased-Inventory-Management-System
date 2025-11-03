@@ -51,6 +51,10 @@ public class Item {
     @Column(nullable = false)
     private Instant updatedAt;
 
+    @Version
+    @Column(nullable = false)
+    private Long version;
+
     @PrePersist
     public void onCreate() {
         Instant now = Instant.now();
