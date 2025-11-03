@@ -37,6 +37,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/suppliers/**").hasRole("MANAGER")
                         .requestMatchers(HttpMethod.PUT, "/api/suppliers/**").hasRole("MANAGER")
                         .requestMatchers(HttpMethod.DELETE, "/api/suppliers/**").hasRole("MANAGER")
+                        .requestMatchers(HttpMethod.POST, "/api/pos/**/cancel").hasRole("MANAGER")
                         .anyRequest().authenticated()
                 )
                 .httpBasic(httpBasic -> httpBasic.disable())
