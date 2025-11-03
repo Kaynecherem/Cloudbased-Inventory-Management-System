@@ -40,7 +40,7 @@ public final class ItemSpecifications {
                 predicates.add(cb.and(
                         cb.isNotNull(root.get("currentQty")),
                         cb.isNotNull(root.get("minLevel")),
-                        cb.lessThan(root.get("currentQty"), root.get("minLevel"))
+                        cb.lessThanOrEqualTo(root.get("currentQty"), root.get("minLevel"))
                 ));
             }
 
