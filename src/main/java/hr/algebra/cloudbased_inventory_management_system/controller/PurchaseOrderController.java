@@ -1,5 +1,6 @@
 package hr.algebra.cloudbased_inventory_management_system.controller;
 
+import hr.algebra.cloudbased_inventory_management_system.controller.support.PageableUtil;
 import hr.algebra.cloudbased_inventory_management_system.dto.PageResponse;
 import hr.algebra.cloudbased_inventory_management_system.dto.PurchaseOrderReceiveRequest;
 import hr.algebra.cloudbased_inventory_management_system.dto.PurchaseOrderRequest;
@@ -8,7 +9,6 @@ import hr.algebra.cloudbased_inventory_management_system.entity.PurchaseOrderSta
 import hr.algebra.cloudbased_inventory_management_system.service.PurchaseOrderService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/pos")
@@ -40,9 +41,19 @@ public class PurchaseOrderController {
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant from,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant to,
             @RequestParam(required = false) Integer page,
-            @RequestParam(required = false) Integer size
+            @RequestParam(required = false) Integer size,
+            @RequestParam(required = false) String sort
     ) {
-        Pageable pageable = buildPageable(page, size);
+        Pageable pageable = PageableUtil.buildPageable(
+                page,
+                size,
+                sort,
+                DEFAULT_PAGE,
+                DEFAULT_SIZE,
+                MAX_PAGE_SIZE,
+                Sort.by(Sort.Direction.DESC, "createdAt"),
+                Set.of("createdAt", "eta", "status", "number")
+        );
         return purchaseOrderService.findPurchaseOrders(status, supplierId, from, to, pageable);
     }
 
@@ -86,9 +97,4 @@ public class PurchaseOrderController {
         return purchaseOrderService.cancelPurchaseOrder(id);
     }
 
-    private Pageable buildPageable(Integer page, Integer size) {
-        int pageNumber = page != null && page >= 0 ? page : DEFAULT_PAGE;
-        int pageSize = size != null && size > 0 ? Math.min(size, MAX_PAGE_SIZE) : DEFAULT_SIZE;
-        return PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.DESC, "createdAt"));
-    }
 }

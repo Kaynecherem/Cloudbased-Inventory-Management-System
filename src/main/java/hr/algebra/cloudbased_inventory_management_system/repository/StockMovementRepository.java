@@ -56,5 +56,7 @@ public interface StockMovementRepository extends JpaRepository<StockMovement, Lo
 
     @Query("SELECT DISTINCT TRIM(sm.reasonCode) FROM StockMovement sm WHERE sm.reasonCode IS NOT NULL AND sm.reasonCode <> ''")
     List<String> findDistinctReasonCodes();
+
+    boolean existsByReasonCodeIgnoreCase(String reasonCode);
 }
 

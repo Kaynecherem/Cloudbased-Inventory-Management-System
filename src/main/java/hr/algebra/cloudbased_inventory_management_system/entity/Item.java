@@ -5,6 +5,9 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Table(
@@ -47,6 +50,10 @@ public class Item {
     @Column(name = "primary_supplier_id")
     private Long primarySupplierId;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "primary_supplier_id", foreignKey = @ForeignKey(name = "fk_items_primary_supplier"), insertable = false, updatable = false)
+    private Supplier primarySupplier;
+
     @Column(nullable = false)
     private Boolean isActive;
 
@@ -59,6 +66,11 @@ public class Item {
     @Version
     @Column(nullable = false)
     private Long version;
+
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("priority ASC, supplier.id ASC")
+    @Builder.Default
+    private List<ItemSupplier> alternateSuppliers = new ArrayList<>();
 
     @PrePersist
     public void onCreate() {
@@ -73,5 +85,34 @@ public class Item {
     @PreUpdate
     public void onUpdate() {
         updatedAt = Instant.now();
+    }
+
+    public void assignPrimarySupplier(Supplier supplier) {
+        this.primarySupplier = supplier;
+        this.primarySupplierId = supplier != null ? supplier.getId() : null;
+    }
+
+    public void replaceAlternateSuppliers(Collection<ItemSupplier> alternates) {
+        if (alternateSuppliers == null) {
+            alternateSuppliers = new ArrayList<>();
+        }
+        alternateSuppliers.forEach(alternate -> alternate.setItem(null));
+        alternateSuppliers.clear();
+        if (alternates == null || alternates.isEmpty()) {
+            return;
+        }
+        alternates.forEach(this::addAlternateSupplier);
+    }
+
+    public void addAlternateSupplier(ItemSupplier alternateSupplier) {
+        if (alternateSupplier == null) {
+            return;
+        }
+        Supplier supplier = alternateSupplier.getSupplier();
+        if (supplier != null) {
+            alternateSupplier.setSupplier(supplier);
+        }
+        alternateSupplier.setItem(this);
+        alternateSuppliers.add(alternateSupplier);
     }
 }

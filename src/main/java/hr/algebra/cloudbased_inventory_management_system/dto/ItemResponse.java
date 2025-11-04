@@ -5,6 +5,7 @@ import lombok.Value;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.List;
 
 @Value
 @Builder
@@ -21,4 +22,5 @@ public class ItemResponse {
     Boolean isActive;
     Instant createdAt;
     Instant updatedAt;
+    List<ItemSupplierResponse> alternateSuppliers;
 }
