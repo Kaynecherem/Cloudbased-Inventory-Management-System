@@ -13,6 +13,10 @@ import java.util.Optional;
 public interface ItemRepository extends JpaRepository<Item, Long>, JpaSpecificationExecutor<Item> {
     boolean existsBySkuIgnoreCase(String sku);
 
+    boolean existsByNameIgnoreCaseAndUnitIgnoreCaseAndIsActiveTrue(String name, String unit);
+
+    boolean existsByNameIgnoreCaseAndUnitIgnoreCaseAndIsActiveTrueAndIdNot(String name, String unit, Long id);
+
     Optional<Item> findByIdAndIsActiveTrue(Long id);
 
     boolean existsByIdAndIsActiveTrue(Long id);

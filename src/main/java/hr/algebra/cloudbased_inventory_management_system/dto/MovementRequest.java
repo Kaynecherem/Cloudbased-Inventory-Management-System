@@ -36,5 +36,8 @@ public class MovementRequest {
 
     @Size(max = 500)
     private String note;
+
+    @Size(max = 100)
+    private String clientRequestId;
 }
 

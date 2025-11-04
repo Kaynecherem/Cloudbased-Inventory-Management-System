@@ -15,4 +15,6 @@ public interface ReferenceDataRepository extends JpaRepository<ReferenceData, Lo
     List<ReferenceData> findByType(ReferenceDataType type);
 
     void deleteByType(ReferenceDataType type);
+
+    boolean existsByTypeAndValueIgnoreCase(ReferenceDataType type, String value);
 }

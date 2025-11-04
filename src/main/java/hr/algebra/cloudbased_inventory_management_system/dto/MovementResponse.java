@@ -19,6 +19,8 @@ public class MovementResponse {
     String unit;
     String reasonCode;
     String note;
+    String clientRequestId;
+    String createdBy;
     Instant createdAt;
 }
 

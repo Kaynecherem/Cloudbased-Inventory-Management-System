@@ -6,9 +6,11 @@ import hr.algebra.cloudbased_inventory_management_system.dto.ItemResponse;
 import hr.algebra.cloudbased_inventory_management_system.entity.Item;
 import hr.algebra.cloudbased_inventory_management_system.entity.ItemActivity;
 import hr.algebra.cloudbased_inventory_management_system.entity.ItemActivityType;
+import hr.algebra.cloudbased_inventory_management_system.entity.PurchaseOrderStatus;
 import hr.algebra.cloudbased_inventory_management_system.repository.ItemActivityRepository;
 import hr.algebra.cloudbased_inventory_management_system.repository.ItemRepository;
 import hr.algebra.cloudbased_inventory_management_system.repository.ItemSpecifications;
+import hr.algebra.cloudbased_inventory_management_system.repository.PurchaseOrderLineRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
+import java.util.EnumSet;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +30,10 @@ public class ItemService {
     private final ItemRepository itemRepository;
     private final ItemActivityRepository itemActivityRepository;
     private final ItemMapper itemMapper;
+    private final PurchaseOrderLineRepository purchaseOrderLineRepository;
+
+    private static final Set<PurchaseOrderStatus> BLOCKING_PURCHASE_ORDER_STATUSES =
+            EnumSet.of(PurchaseOrderStatus.DRAFT, PurchaseOrderStatus.PENDING, PurchaseOrderStatus.PARTIALLY_RECEIVED);
 
     @Transactional(readOnly = true)
     public Page<ItemResponse> findItems(String search, Long supplierId, String category, Boolean lowStock, Pageable pageable) {
@@ -45,6 +53,7 @@ public class ItemService {
     @Transactional
     public ItemResponse createItem(ItemRequest request) {
         validateSku(request.getSku(), null);
+        validateNameAndUnit(request.getName(), request.getUnit(), null);
         Item item = itemMapper.toEntity(request);
         if (item.getIsActive() == null) {
             item.setIsActive(Boolean.TRUE);
@@ -62,6 +71,7 @@ public class ItemService {
         if (!existing.getSku().equalsIgnoreCase(request.getSku())) {
             validateSku(request.getSku(), existing);
         }
+        validateNameAndUnit(request.getName(), request.getUnit(), existing);
 
         BigDecimal previousQty = existing.getCurrentQty();
         itemMapper.updateEntity(existing, request);
@@ -76,6 +86,9 @@ public class ItemService {
     public void deleteItem(Long id) {
         Item existing = itemRepository.findByIdAndIsActiveTrue(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Item not found"));
+        if (purchaseOrderLineRepository.existsOpenLinesForItem(id, BLOCKING_PURCHASE_ORDER_STATUSES)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Item is referenced by open purchase orders");
+        }
         existing.setIsActive(Boolean.FALSE);
         Item saved = itemRepository.save(existing);
         logActivity(saved, ItemActivityType.DELETED, null, "Item deactivated");
@@ -103,6 +116,28 @@ public class ItemService {
             return;
         }
         throw new ResponseStatusException(HttpStatus.CONFLICT, "SKU already exists");
+    }
+
+    private void validateNameAndUnit(String name, String unit, Item currentItem) {
+        String sanitizedName = name != null ? name.trim() : null;
+        String sanitizedUnit = unit != null ? unit.trim() : null;
+        if (sanitizedName == null || sanitizedName.isEmpty() || sanitizedUnit == null || sanitizedUnit.isEmpty()) {
+            return;
+        }
+
+        boolean exists;
+        if (currentItem == null) {
+            exists = itemRepository.existsByNameIgnoreCaseAndUnitIgnoreCaseAndIsActiveTrue(sanitizedName, sanitizedUnit);
+        } else {
+            exists = itemRepository.existsByNameIgnoreCaseAndUnitIgnoreCaseAndIsActiveTrueAndIdNot(
+                    sanitizedName,
+                    sanitizedUnit,
+                    currentItem.getId()
+            );
+        }
+        if (exists) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Active item with the same name and unit already exists");
+        }
     }
 
     private void logActivity(Item item, ItemActivityType type, BigDecimal quantityChange, String description) {

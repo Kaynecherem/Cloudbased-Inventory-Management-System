@@ -16,6 +16,8 @@ import java.util.List;
 @Repository
 public interface StockMovementRepository extends JpaRepository<StockMovement, Long>, JpaSpecificationExecutor<StockMovement> {
 
+    boolean existsByClientRequestId(String clientRequestId);
+
     @Query("""
             SELECT new hr.algebra.cloudbased_inventory_management_system.dto.UsageReportItem(
                 sm.item.id,
