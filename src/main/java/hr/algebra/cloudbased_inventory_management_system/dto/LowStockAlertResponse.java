@@ -15,4 +15,11 @@ public class LowStockAlertResponse {
     BigDecimal currentQty;
     BigDecimal minLevel;
     BigDecimal shortage;
+    Long supplierId;
+    String supplierName;
+    String supplierEmail;
+    String supplierPhone;
+    Integer supplierLeadTimeDays;
+    boolean hasPrimarySupplier;
+    BigDecimal suggestedOrderQty;
 }

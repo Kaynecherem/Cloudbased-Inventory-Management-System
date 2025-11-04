@@ -7,7 +7,12 @@ import java.math.BigDecimal;
 import java.time.Instant;
 
 @Entity
-@Table(name = "items")
+@Table(
+        name = "items",
+        indexes = {
+                @Index(name = "idx_items_low", columnList = "current_qty, min_level")
+        }
+)
 @Getter
 @Setter
 @Builder
