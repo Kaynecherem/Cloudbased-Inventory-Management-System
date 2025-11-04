@@ -3,14 +3,18 @@ package hr.algebra.cloudbased_inventory_management_system.service;
 import hr.algebra.cloudbased_inventory_management_system.dto.ItemActivityResponse;
 import hr.algebra.cloudbased_inventory_management_system.dto.ItemRequest;
 import hr.algebra.cloudbased_inventory_management_system.dto.ItemResponse;
+import hr.algebra.cloudbased_inventory_management_system.dto.ItemSupplierRequest;
 import hr.algebra.cloudbased_inventory_management_system.entity.Item;
 import hr.algebra.cloudbased_inventory_management_system.entity.ItemActivity;
 import hr.algebra.cloudbased_inventory_management_system.entity.ItemActivityType;
+import hr.algebra.cloudbased_inventory_management_system.entity.ItemSupplier;
 import hr.algebra.cloudbased_inventory_management_system.entity.PurchaseOrderStatus;
+import hr.algebra.cloudbased_inventory_management_system.entity.Supplier;
 import hr.algebra.cloudbased_inventory_management_system.repository.ItemActivityRepository;
 import hr.algebra.cloudbased_inventory_management_system.repository.ItemRepository;
 import hr.algebra.cloudbased_inventory_management_system.repository.ItemSpecifications;
 import hr.algebra.cloudbased_inventory_management_system.repository.PurchaseOrderLineRepository;
+import hr.algebra.cloudbased_inventory_management_system.repository.SupplierRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,7 +25,14 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.util.EnumSet;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +42,7 @@ public class ItemService {
     private final ItemActivityRepository itemActivityRepository;
     private final ItemMapper itemMapper;
     private final PurchaseOrderLineRepository purchaseOrderLineRepository;
+    private final SupplierRepository supplierRepository;
 
     private static final Set<PurchaseOrderStatus> BLOCKING_PURCHASE_ORDER_STATUSES =
             EnumSet.of(PurchaseOrderStatus.DRAFT, PurchaseOrderStatus.PENDING, PurchaseOrderStatus.PARTIALLY_RECEIVED);
@@ -58,6 +70,8 @@ public class ItemService {
         if (item.getIsActive() == null) {
             item.setIsActive(Boolean.TRUE);
         }
+        assignPrimarySupplier(item, request.getPrimarySupplierId());
+        applyAlternateSuppliers(item, request.getAlternateSuppliers());
         Item saved = itemRepository.save(item);
         logActivity(saved, ItemActivityType.CREATED, saved.getCurrentQty(), "Item created");
         return itemMapper.toResponse(saved);
@@ -75,6 +89,8 @@ public class ItemService {
 
         BigDecimal previousQty = existing.getCurrentQty();
         itemMapper.updateEntity(existing, request);
+        assignPrimarySupplier(existing, request.getPrimarySupplierId());
+        applyAlternateSuppliers(existing, request.getAlternateSuppliers());
         Item saved = itemRepository.save(existing);
 
         BigDecimal quantityChange = calculateChange(previousQty, saved.getCurrentQty());
@@ -166,5 +182,81 @@ public class ItemService {
                 .description(activity.getDescription())
                 .createdAt(activity.getCreatedAt())
                 .build();
+    }
+
+    private void assignPrimarySupplier(Item item, Long supplierId) {
+        if (supplierId == null) {
+            item.assignPrimarySupplier(null);
+            return;
+        }
+        Supplier supplier = supplierRepository.findByIdAndIsActiveTrue(supplierId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Primary supplier not found"));
+        item.assignPrimarySupplier(supplier);
+    }
+
+    private void applyAlternateSuppliers(Item item, List<ItemSupplierRequest> requests) {
+        if (requests == null || requests.isEmpty()) {
+            item.replaceAlternateSuppliers(null);
+            return;
+        }
+
+        LinkedHashMap<Long, Integer> desired = new LinkedHashMap<>();
+        for (ItemSupplierRequest request : requests) {
+            if (request == null || request.getSupplierId() == null) {
+                continue;
+            }
+            Long supplierId = request.getSupplierId();
+            if (Objects.equals(item.getPrimarySupplierId(), supplierId)) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Alternate supplier cannot match primary supplier");
+            }
+            if (desired.putIfAbsent(supplierId, request.getPriority()) != null) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Duplicate alternate supplier: " + supplierId);
+            }
+        }
+
+        if (desired.isEmpty()) {
+            item.replaceAlternateSuppliers(null);
+            return;
+        }
+
+        List<Supplier> suppliers = supplierRepository.findByIdInAndIsActiveTrue(desired.keySet());
+        if (suppliers.size() != desired.size()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "One or more alternate suppliers are invalid or inactive");
+        }
+
+        Map<Long, Supplier> supplierIndex = suppliers.stream()
+                .collect(Collectors.toMap(Supplier::getId, supplier -> supplier));
+
+        int fallbackPriority = 0;
+        Set<Integer> usedPriorities = new HashSet<>();
+        List<ItemSupplier> alternates = new ArrayList<>();
+        for (Map.Entry<Long, Integer> entry : desired.entrySet()) {
+            Supplier supplier = supplierIndex.get(entry.getKey());
+            if (supplier == null) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Supplier not found: " + entry.getKey());
+            }
+            Integer priority = entry.getValue();
+            if (priority != null && priority < 0) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Priority must be zero or positive");
+            }
+            if (priority == null) {
+                while (usedPriorities.contains(fallbackPriority)) {
+                    fallbackPriority++;
+                }
+                priority = fallbackPriority;
+                fallbackPriority++;
+                usedPriorities.add(priority);
+            } else {
+                if (!usedPriorities.add(priority)) {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Duplicate priority value: " + priority);
+                }
+            }
+            ItemSupplier alternate = ItemSupplier.builder()
+                    .supplier(supplier)
+                    .priority(priority)
+                    .build();
+            alternates.add(alternate);
+        }
+        item.replaceAlternateSuppliers(alternates);
     }
 }

@@ -26,4 +26,8 @@ public interface ItemRepository extends JpaRepository<Item, Long>, JpaSpecificat
 
     @Query("SELECT DISTINCT TRIM(i.category) FROM Item i WHERE i.category IS NOT NULL AND i.category <> ''")
     List<String> findDistinctCategories();
+
+    boolean existsByUnitIgnoreCase(String unit);
+
+    boolean existsByCategoryIgnoreCase(String category);
 }

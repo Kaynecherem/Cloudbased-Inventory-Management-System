@@ -7,9 +7,11 @@ import hr.algebra.cloudbased_inventory_management_system.repository.ItemReposito
 import hr.algebra.cloudbased_inventory_management_system.repository.ReferenceDataRepository;
 import hr.algebra.cloudbased_inventory_management_system.repository.StockMovementRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -52,13 +54,18 @@ public class ReferenceDataService {
             }
         }
 
-        if (normalized.isEmpty()) {
-            referenceDataRepository.deleteByType(type);
-            return List.of();
-        }
-
         Map<String, ReferenceData> existing = referenceDataRepository.findByType(type).stream()
                 .collect(Collectors.toMap(entry -> entry.getValue().toLowerCase(Locale.ROOT), entry -> entry));
+
+        if (normalized.isEmpty()) {
+            if (!existing.isEmpty()) {
+                ensureValuesCanBeRemoved(type, existing.values().stream()
+                        .map(ReferenceData::getValue)
+                        .toList());
+                referenceDataRepository.deleteAllInBatch(existing.values());
+            }
+            return List.of();
+        }
 
         List<ReferenceData> toSave = new ArrayList<>();
         Set<String> processedKeys = new HashSet<>();
@@ -85,6 +92,9 @@ public class ReferenceDataService {
                 .toList();
 
         if (!toDelete.isEmpty()) {
+            ensureValuesCanBeRemoved(type, toDelete.stream()
+                    .map(ReferenceData::getValue)
+                    .toList());
             referenceDataRepository.deleteAllInBatch(toDelete);
         }
         if (!toSave.isEmpty()) {
@@ -111,5 +121,29 @@ public class ReferenceDataService {
             return null;
         }
         return value.trim().replaceAll("\\s+", " ");
+    }
+
+    private void ensureValuesCanBeRemoved(ReferenceDataType type, Collection<String> values) {
+        if (values == null || values.isEmpty()) {
+            return;
+        }
+        for (String value : values) {
+            String normalized = normalizeValue(value);
+            if (!StringUtils.hasText(normalized)) {
+                continue;
+            }
+            if (isValueInUse(type, normalized)) {
+                throw new ResponseStatusException(HttpStatus.CONFLICT,
+                        "Cannot remove " + type.name().toLowerCase(Locale.ROOT) + " value '" + normalized + "' because it is in use");
+            }
+        }
+    }
+
+    private boolean isValueInUse(ReferenceDataType type, String value) {
+        return switch (type) {
+            case UNIT -> itemRepository.existsByUnitIgnoreCase(value);
+            case CATEGORY -> itemRepository.existsByCategoryIgnoreCase(value);
+            case REASON_CODE -> stockMovementRepository.existsByReasonCodeIgnoreCase(value);
+        };
     }
 }

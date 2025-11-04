@@ -9,6 +9,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.List;
+
+import jakarta.validation.Valid;
 
 @Data
 @Builder
@@ -39,4 +42,6 @@ public class ItemRequest {
     private Long primarySupplierId;
 
     private Boolean isActive;
+
+    private List<@Valid ItemSupplierRequest> alternateSuppliers;
 }

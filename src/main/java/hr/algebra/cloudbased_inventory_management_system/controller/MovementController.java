@@ -1,5 +1,6 @@
 package hr.algebra.cloudbased_inventory_management_system.controller;
 
+import hr.algebra.cloudbased_inventory_management_system.controller.support.PageableUtil;
 import hr.algebra.cloudbased_inventory_management_system.dto.MovementRequest;
 import hr.algebra.cloudbased_inventory_management_system.dto.MovementResponse;
 import hr.algebra.cloudbased_inventory_management_system.dto.PageResponse;
@@ -7,7 +8,6 @@ import hr.algebra.cloudbased_inventory_management_system.entity.MovementType;
 import hr.algebra.cloudbased_inventory_management_system.service.MovementService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -17,6 +17,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/movements")
@@ -39,9 +40,19 @@ public class MovementController {
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant to,
             @RequestParam(required = false) String reason,
             @RequestParam(required = false) Integer page,
-            @RequestParam(required = false) Integer size
+            @RequestParam(required = false) Integer size,
+            @RequestParam(required = false) String sort
     ) {
-        Pageable pageable = buildPageable(page, size);
+        Pageable pageable = PageableUtil.buildPageable(
+                page,
+                size,
+                sort,
+                DEFAULT_PAGE,
+                DEFAULT_SIZE,
+                MAX_PAGE_SIZE,
+                Sort.by(Sort.Direction.DESC, "createdAt"),
+                Set.of("createdAt", "quantity", "resultingQuantity", "type", "reasonCode")
+        );
         return PageResponse.from(movementService.findMovements(itemId, type, from, to, reason, pageable));
     }
 
@@ -52,10 +63,5 @@ public class MovementController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    private Pageable buildPageable(Integer page, Integer size) {
-        int pageNumber = page != null && page >= 0 ? page : DEFAULT_PAGE;
-        int pageSize = size != null && size > 0 ? Math.min(size, MAX_PAGE_SIZE) : DEFAULT_SIZE;
-        return PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.DESC, "createdAt"));
-    }
 }
 
