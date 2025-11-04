@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -27,6 +28,7 @@ public class ItemController {
     private final ItemService service;
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('MANAGER','STAFF')")
     public PageResponse<ItemResponse> getItems(
             @RequestParam(required = false) String search,
             @RequestParam(required = false) Long supplierId,
@@ -40,28 +42,33 @@ public class ItemController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('MANAGER','STAFF')")
     public ItemResponse getItem(@PathVariable Long id) {
         return service.getItem(id);
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('MANAGER')")
     public ResponseEntity<ItemResponse> createItem(@Valid @RequestBody ItemRequest request) {
         ItemResponse response = service.createItem(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('MANAGER')")
     public ItemResponse updateItem(@PathVariable Long id, @Valid @RequestBody ItemRequest request) {
         return service.updateItem(id, request);
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('MANAGER')")
     public ResponseEntity<Void> deleteItem(@PathVariable Long id) {
         service.deleteItem(id);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{id}/activity")
+    @PreAuthorize("hasAnyRole('MANAGER','STAFF')")
     public PageResponse<ItemActivityResponse> getItemActivity(
             @PathVariable Long id,
             @RequestParam(required = false) Integer page,

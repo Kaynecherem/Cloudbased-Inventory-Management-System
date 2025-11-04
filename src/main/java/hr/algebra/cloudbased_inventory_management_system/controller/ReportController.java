@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
@@ -21,6 +22,7 @@ public class ReportController {
     private final ReportService reportService;
 
     @GetMapping("/usage")
+    @PreAuthorize("hasAnyRole('MANAGER','STAFF')")
     public List<UsageReportItem> getUsageReport(
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant from,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant to,
@@ -30,6 +32,7 @@ public class ReportController {
     }
 
     @GetMapping("/top-movers")
+    @PreAuthorize("hasAnyRole('MANAGER','STAFF')")
     public List<TopMoverItem> getTopMovers(
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant from,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant to,
@@ -39,6 +42,7 @@ public class ReportController {
     }
 
     @GetMapping(value = "/export.csv", produces = "text/csv")
+    @PreAuthorize("hasRole('MANAGER')")
     public ResponseEntity<Resource> exportReport(
             @RequestParam String type,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant from,

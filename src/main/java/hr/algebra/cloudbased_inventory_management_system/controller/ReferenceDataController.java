@@ -23,16 +23,19 @@ public class ReferenceDataController {
     private final ReferenceDataService referenceDataService;
 
     @GetMapping("/units")
+    @PreAuthorize("hasAnyRole('MANAGER','STAFF')")
     public List<String> getUnits() {
         return referenceDataService.getValues(ReferenceDataType.UNIT);
     }
 
     @GetMapping("/categories")
+    @PreAuthorize("hasAnyRole('MANAGER','STAFF')")
     public List<String> getCategories() {
         return referenceDataService.getValues(ReferenceDataType.CATEGORY);
     }
 
     @GetMapping("/reason-codes")
+    @PreAuthorize("hasAnyRole('MANAGER','STAFF')")
     public List<String> getReasonCodes() {
         return referenceDataService.getValues(ReferenceDataType.REASON_CODE);
     }

@@ -13,6 +13,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
@@ -30,6 +31,7 @@ public class MovementController {
     private final MovementService movementService;
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('MANAGER','STAFF')")
     public PageResponse<MovementResponse> getMovements(
             @RequestParam(required = false) Long itemId,
             @RequestParam(required = false) MovementType type,
@@ -44,6 +46,7 @@ public class MovementController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('MANAGER','STAFF')")
     public ResponseEntity<MovementResponse> createMovement(@Valid @RequestBody MovementRequest request) {
         MovementResponse response = movementService.recordMovement(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);

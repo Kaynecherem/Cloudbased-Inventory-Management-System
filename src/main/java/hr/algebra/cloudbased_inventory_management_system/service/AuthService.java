@@ -15,6 +15,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Map;
+
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -35,7 +37,7 @@ public class AuthService {
         );
 
         UserDetails principal = (UserDetails) authentication.getPrincipal();
-        String token = jwtService.generateToken(principal);
+        String token = jwtService.generateToken(principal, Map.of("role", user.getRole().name()));
         UserResponse userResponse = userMapper.toResponse(user);
         return AuthResponse.builder()
                 .token(token)
@@ -61,7 +63,7 @@ public class AuthService {
             throw new BadCredentialsException("Invalid token");
         }
 
-        String refreshedToken = jwtService.generateToken(userDetails);
+        String refreshedToken = jwtService.generateToken(userDetails, Map.of("role", user.getRole().name()));
         return AuthResponse.builder()
                 .token(refreshedToken)
                 .role(user.getRole())
