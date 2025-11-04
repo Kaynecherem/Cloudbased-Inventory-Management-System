@@ -12,9 +12,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "purchase_orders", uniqueConstraints = {
-        @UniqueConstraint(name = "uk_purchase_orders_number", columnNames = "number")
-})
+@Table(name = "purchase_orders",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "uk_purchase_orders_number", columnNames = "number")
+        },
+        indexes = {
+                @Index(name = "idx_po_supplier_status", columnList = "supplier_id,status")
+        })
 @Getter
 @Setter
 @Builder

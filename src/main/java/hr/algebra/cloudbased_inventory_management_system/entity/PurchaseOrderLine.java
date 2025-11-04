@@ -10,7 +10,10 @@ import lombok.Setter;
 import java.math.BigDecimal;
 
 @Entity
-@Table(name = "purchase_order_lines")
+@Table(name = "purchase_order_lines",
+        indexes = {
+                @Index(name = "idx_pol_po", columnList = "po_id")
+        })
 @Getter
 @Setter
 @Builder
