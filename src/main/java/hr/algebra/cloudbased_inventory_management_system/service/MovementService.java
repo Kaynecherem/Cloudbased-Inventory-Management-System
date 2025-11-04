@@ -4,17 +4,24 @@ import hr.algebra.cloudbased_inventory_management_system.dto.MovementRequest;
 import hr.algebra.cloudbased_inventory_management_system.dto.MovementResponse;
 import hr.algebra.cloudbased_inventory_management_system.entity.Item;
 import hr.algebra.cloudbased_inventory_management_system.entity.MovementType;
+import hr.algebra.cloudbased_inventory_management_system.entity.ReferenceDataType;
 import hr.algebra.cloudbased_inventory_management_system.entity.StockMovement;
 import hr.algebra.cloudbased_inventory_management_system.repository.ItemRepository;
+import hr.algebra.cloudbased_inventory_management_system.repository.ReferenceDataRepository;
 import hr.algebra.cloudbased_inventory_management_system.repository.StockMovementRepository;
 import hr.algebra.cloudbased_inventory_management_system.repository.StockMovementSpecifications;
-import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -22,11 +29,26 @@ import java.math.BigDecimal;
 import java.time.Instant;
 
 @Service
-@RequiredArgsConstructor
 public class MovementService {
+
+    private static final int MAX_OPTIMISTIC_LOCK_ATTEMPTS = 3;
 
     private final ItemRepository itemRepository;
     private final StockMovementRepository stockMovementRepository;
+    private final ReferenceDataRepository referenceDataRepository;
+    private final TransactionTemplate transactionTemplate;
+
+    public MovementService(
+            ItemRepository itemRepository,
+            StockMovementRepository stockMovementRepository,
+            ReferenceDataRepository referenceDataRepository,
+            PlatformTransactionManager transactionManager
+    ) {
+        this.itemRepository = itemRepository;
+        this.stockMovementRepository = stockMovementRepository;
+        this.referenceDataRepository = referenceDataRepository;
+        this.transactionTemplate = new TransactionTemplate(transactionManager);
+    }
 
     @Transactional(readOnly = true)
     public Page<MovementResponse> findMovements(
@@ -43,8 +65,24 @@ public class MovementService {
         ).map(this::toResponse);
     }
 
-    @Transactional
     public MovementResponse recordMovement(MovementRequest request) {
+        int attempts = 0;
+        while (true) {
+            try {
+                MovementResponse response = transactionTemplate.execute(status -> doRecordMovement(request));
+                if (response != null) {
+                    return response;
+                }
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unable to record movement");
+            } catch (OptimisticLockingFailureException ex) {
+                if (++attempts >= MAX_OPTIMISTIC_LOCK_ATTEMPTS) {
+                    throw new ResponseStatusException(HttpStatus.CONFLICT, "Inventory was updated concurrently. Please retry.", ex);
+                }
+            }
+        }
+    }
+
+    private MovementResponse doRecordMovement(MovementRequest request) {
         Item item = itemRepository.findByIdAndIsActiveTrue(request.getItemId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Item not found"));
 
@@ -58,13 +96,18 @@ public class MovementService {
         BigDecimal currentQty = item.getCurrentQty() == null ? BigDecimal.ZERO : item.getCurrentQty();
         BigDecimal resultingQty = calculateResultingQuantity(currentQty, quantity, request.getType());
 
-        item.setCurrentQty(resultingQty);
+        String reasonCode = normalizeReasonCode(request.getReasonCode());
+        String note = sanitize(request.getNote());
+        String clientRequestId = sanitize(request.getClientRequestId());
 
-        try {
-            itemRepository.saveAndFlush(item);
-        } catch (OptimisticLockingFailureException ex) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Inventory was updated concurrently. Please retry.", ex);
+        if (clientRequestId != null && stockMovementRepository.existsByClientRequestId(clientRequestId)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Movement with the same client request id already exists");
         }
+
+        item.setCurrentQty(resultingQty);
+        itemRepository.saveAndFlush(item);
+
+        String createdBy = resolveCurrentUsername();
 
         StockMovement movement = StockMovement.builder()
                 .item(item)
@@ -72,13 +115,21 @@ public class MovementService {
                 .quantity(quantity)
                 .resultingQuantity(resultingQty)
                 .unit(itemUnit)
-                .reasonCode(sanitize(request.getReasonCode()))
-                .note(sanitize(request.getNote()))
+                .reasonCode(reasonCode)
+                .note(note)
+                .clientRequestId(clientRequestId)
+                .createdBy(createdBy)
                 .build();
 
-        movement.setCreatedAt(Instant.now());
-        StockMovement savedMovement = stockMovementRepository.save(movement);
-        return toResponse(savedMovement);
+        try {
+            StockMovement savedMovement = stockMovementRepository.saveAndFlush(movement);
+            return toResponse(savedMovement);
+        } catch (DataIntegrityViolationException ex) {
+            if (clientRequestId != null) {
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "Movement with the same client request id already exists", ex);
+            }
+            throw ex;
+        }
     }
 
     private BigDecimal calculateResultingQuantity(BigDecimal currentQty, BigDecimal quantity, MovementType type) {
@@ -105,6 +156,8 @@ public class MovementService {
                 .unit(movement.getUnit())
                 .reasonCode(movement.getReasonCode())
                 .note(movement.getNote())
+                .clientRequestId(movement.getClientRequestId())
+                .createdBy(movement.getCreatedBy())
                 .createdAt(movement.getCreatedAt())
                 .build();
     }
@@ -126,6 +179,30 @@ public class MovementService {
             return null;
         }
         return value.stripTrailingZeros();
+    }
+
+    private String normalizeReasonCode(String value) {
+        String sanitized = sanitize(value);
+        if (!StringUtils.hasText(sanitized)) {
+            return null;
+        }
+        boolean exists = referenceDataRepository.existsByTypeAndValueIgnoreCase(ReferenceDataType.REASON_CODE, sanitized);
+        if (!exists) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unknown reason code");
+        }
+        return sanitized;
+    }
+
+    private String resolveCurrentUsername() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated() || authentication instanceof AnonymousAuthenticationToken) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unable to resolve current user");
+        }
+        String username = sanitize(authentication.getName());
+        if (!StringUtils.hasText(username)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unable to resolve current user");
+        }
+        return username;
     }
 
     private String sanitize(String value) {

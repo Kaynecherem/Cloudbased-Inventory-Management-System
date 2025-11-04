@@ -2,12 +2,18 @@ package hr.algebra.cloudbased_inventory_management_system.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
 import java.time.Instant;
 
 @Entity
-@Table(name = "stock_movements")
+@Table(
+        name = "stock_movements",
+        indexes = {
+                @Index(name = "ux_stock_movements_client_request_id", columnList = "client_request_id", unique = true)
+        }
+)
 @Getter
 @Setter
 @Builder
@@ -42,12 +48,14 @@ public class StockMovement {
     @Column(length = 500)
     private String note;
 
+    @Column(name = "client_request_id", length = 100)
+    private String clientRequestId;
+
+    @Column(nullable = false, length = 150, updatable = false)
+    private String createdBy;
+
+    @CreationTimestamp
     @Column(nullable = false, updatable = false)
     private Instant createdAt;
-
-    @PrePersist
-    public void onCreate() {
-        createdAt = Instant.now();
-    }
 }
 
