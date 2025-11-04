@@ -1,0 +1,2965 @@
+{
+	"info": {
+		"_postman_id": "15447960-a71ba934-ca0e-4bf2-83e9-893ad7e71741",
+		"name": "Cloudbased_Inventory_Management_System API",
+		"description": "Cloudbased_Inventory_Management_System API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "api",
+			"item": [
+				{
+					"name": "items",
+					"item": [
+						{
+							"name": "{id}",
+							"item": [
+								{
+									"name": "PUT api/items/{id}",
+									"id": "15447960-a42af2eb-08bb-4e09-aedc-8bd89ff77658",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "Accept",
+												"value": "*/*"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"name\": \"string\",\n  \"sku\": \"string\",\n  \"category\": \"string\",\n  \"unit\": \"string\",\n  \"currentQty\": {},\n  \"minLevel\": {},\n  \"locationId\": 8689,\n  \"primarySupplierId\": 1058,\n  \"isActive\": false\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/items/:id",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"items",
+												":id"
+											],
+											"variable": [
+												{
+													"id": "5362cb24-00d2-411b-afc8-a0d96b698977",
+													"key": "id",
+													"value": "6795",
+													"description": "(Required) "
+												}
+											]
+										}
+									},
+									"response": [
+										{
+											"id": "15447960-08774d74-8047-458b-a5c8-d14eb1e7835f",
+											"name": "OK",
+											"originalRequest": {
+												"method": "PUT",
+												"header": [
+													{
+														"key": "Accept",
+														"value": "*/*"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n  \"name\": \"string\",\n  \"sku\": \"string\",\n  \"category\": \"string\",\n  \"unit\": \"string\",\n  \"currentQty\": {},\n  \"minLevel\": {},\n  \"locationId\": 8689,\n  \"primarySupplierId\": 1058,\n  \"isActive\": false\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/api/items/:id",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"items",
+														":id"
+													],
+													"variable": [
+														{
+															"key": "id",
+															"value": "6795",
+															"description": "(Required) "
+														}
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "*/*"
+												}
+											],
+											"cookie": [],
+											"responseTime": null,
+											"body": "{\n  \"id\": 6300,\n  \"name\": \"string\",\n  \"sku\": \"string\",\n  \"category\": \"string\",\n  \"unit\": \"string\",\n  \"currentQty\": {},\n  \"minLevel\": {},\n  \"locationId\": 2483,\n  \"primarySupplierId\": 900,\n  \"isActive\": false,\n  \"createdAt\": {},\n  \"updatedAt\": {}\n}"
+										}
+									]
+								},
+								{
+									"name": "DELETE api/items/{id}",
+									"id": "15447960-fe355e8f-5c3d-4666-953d-c9a52072d150",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "DELETE",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "*/*"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/api/items/:id",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"items",
+												":id"
+											],
+											"variable": [
+												{
+													"id": "cbbfb2b8-76b3-450a-aef9-9be194c46646",
+													"key": "id",
+													"value": "6795",
+													"description": "(Required) "
+												}
+											]
+										}
+									},
+									"response": [
+										{
+											"id": "15447960-c14cc8db-7ca7-4b9e-a85c-e0b8d43c55c1",
+											"name": "OK",
+											"originalRequest": {
+												"method": "DELETE",
+												"header": [
+													{
+														"key": "Accept",
+														"value": "*/*"
+													}
+												],
+												"url": {
+													"raw": "{{baseUrl}}/api/items/:id",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"items",
+														":id"
+													],
+													"variable": [
+														{
+															"key": "id",
+															"value": "6795",
+															"description": "(Required) "
+														}
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "*/*"
+												}
+											],
+											"cookie": [],
+											"responseTime": null,
+											"body": "{}"
+										}
+									]
+								},
+								{
+									"name": "GET api/items/{id}",
+									"id": "15447960-6ae07bbb-e854-460a-94f4-1dc2be06a539",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "*/*"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/api/items/:id",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"items",
+												":id"
+											],
+											"variable": [
+												{
+													"id": "6a3723ed-3b3b-434a-b108-2c21438143fd",
+													"key": "id",
+													"value": "6795",
+													"description": "(Required) "
+												}
+											]
+										}
+									},
+									"response": [
+										{
+											"id": "15447960-98540030-d6fc-4ec2-9ad7-ec6d1a64d1d5",
+											"name": "OK",
+											"originalRequest": {
+												"method": "GET",
+												"header": [
+													{
+														"key": "Accept",
+														"value": "*/*"
+													}
+												],
+												"url": {
+													"raw": "{{baseUrl}}/api/items/:id",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"items",
+														":id"
+													],
+													"variable": [
+														{
+															"key": "id",
+															"value": "6795",
+															"description": "(Required) "
+														}
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "*/*"
+												}
+											],
+											"cookie": [],
+											"responseTime": null,
+											"body": "{\n  \"id\": 6300,\n  \"name\": \"string\",\n  \"sku\": \"string\",\n  \"category\": \"string\",\n  \"unit\": \"string\",\n  \"currentQty\": {},\n  \"minLevel\": {},\n  \"locationId\": 2483,\n  \"primarySupplierId\": 900,\n  \"isActive\": false,\n  \"createdAt\": {},\n  \"updatedAt\": {}\n}"
+										}
+									]
+								},
+								{
+									"name": "GET api/items/{id}/activity",
+									"id": "15447960-e8a25200-22b4-41f1-9c29-d86e3f34a37c",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "*/*"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/api/items/:id/activity?page=9829&size=9829",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"items",
+												":id",
+												"activity"
+											],
+											"query": [
+												{
+													"key": "page",
+													"value": "9829"
+												},
+												{
+													"key": "size",
+													"value": "9829"
+												}
+											],
+											"variable": [
+												{
+													"id": "f7369f26-f6ee-491a-888d-c0ea29147762",
+													"key": "id",
+													"value": "6795",
+													"description": "(Required) "
+												}
+											]
+										}
+									},
+									"response": [
+										{
+											"id": "15447960-df97a362-4f84-4943-ae01-dc77aefa3e82",
+											"name": "OK",
+											"originalRequest": {
+												"method": "GET",
+												"header": [
+													{
+														"key": "Accept",
+														"value": "*/*"
+													}
+												],
+												"url": {
+													"raw": "{{baseUrl}}/api/items/:id/activity?page=9829&size=9829",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"items",
+														":id",
+														"activity"
+													],
+													"query": [
+														{
+															"key": "page",
+															"value": "9829"
+														},
+														{
+															"key": "size",
+															"value": "9829"
+														}
+													],
+													"variable": [
+														{
+															"key": "id",
+															"value": "6795",
+															"description": "(Required) "
+														}
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "*/*"
+												}
+											],
+											"cookie": [],
+											"responseTime": null,
+											"body": "{\n  \"id\": 573,\n  \"type\": \"UPDATED\",\n  \"quantityChange\": {},\n  \"description\": \"string\",\n  \"createdAt\": {}\n}"
+										}
+									]
+								}
+							],
+							"id": "15447960-5d9ede15-18ab-4bc3-9588-2247b94c5367"
+						},
+						{
+							"name": "POST api/items",
+							"id": "15447960-b2c4f078-1849-4faf-9690-ec019fb390b0",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"name\": \"string\",\n  \"sku\": \"string\",\n  \"category\": \"string\",\n  \"unit\": \"string\",\n  \"currentQty\": {},\n  \"minLevel\": {},\n  \"locationId\": 8689,\n  \"primarySupplierId\": 1058,\n  \"isActive\": false\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/items",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"items"
+									]
+								}
+							},
+							"response": [
+								{
+									"id": "15447960-4abf162a-3222-4d2c-99a1-9f853e4eb059",
+									"name": "OK",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "*/*"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"name\": \"string\",\n  \"sku\": \"string\",\n  \"category\": \"string\",\n  \"unit\": \"string\",\n  \"currentQty\": {},\n  \"minLevel\": {},\n  \"locationId\": 8689,\n  \"primarySupplierId\": 1058,\n  \"isActive\": false\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/items",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"items"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "*/*"
+										}
+									],
+									"cookie": [],
+									"responseTime": null,
+									"body": "{\n  \"id\": 6300,\n  \"name\": \"string\",\n  \"sku\": \"string\",\n  \"category\": \"string\",\n  \"unit\": \"string\",\n  \"currentQty\": {},\n  \"minLevel\": {},\n  \"locationId\": 2483,\n  \"primarySupplierId\": 900,\n  \"isActive\": false,\n  \"createdAt\": {},\n  \"updatedAt\": {}\n}"
+								}
+							]
+						},
+						{
+							"name": "GET api/items",
+							"id": "15447960-1833a102-7357-4745-8449-934ea7bc232c",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/items?search=string&supplierId=6795&category=string&lowStock=false&page=9829&size=9829",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"items"
+									],
+									"query": [
+										{
+											"key": "search",
+											"value": "string"
+										},
+										{
+											"key": "supplierId",
+											"value": "6795"
+										},
+										{
+											"key": "category",
+											"value": "string"
+										},
+										{
+											"key": "lowStock",
+											"value": "false"
+										},
+										{
+											"key": "page",
+											"value": "9829"
+										},
+										{
+											"key": "size",
+											"value": "9829"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"id": "15447960-293d8054-067c-413b-8248-c8d3c173c670",
+									"name": "OK",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "*/*"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/api/items?search=string&supplierId=6795&category=string&lowStock=true&page=9829&size=9829",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"items"
+											],
+											"query": [
+												{
+													"key": "search",
+													"value": "string"
+												},
+												{
+													"key": "supplierId",
+													"value": "6795"
+												},
+												{
+													"key": "category",
+													"value": "string"
+												},
+												{
+													"key": "lowStock",
+													"value": "true"
+												},
+												{
+													"key": "page",
+													"value": "9829"
+												},
+												{
+													"key": "size",
+													"value": "9829"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "*/*"
+										}
+									],
+									"cookie": [],
+									"responseTime": null,
+									"body": "{\n  \"id\": 6300,\n  \"name\": \"string\",\n  \"sku\": \"string\",\n  \"category\": \"string\",\n  \"unit\": \"string\",\n  \"currentQty\": {},\n  \"minLevel\": {},\n  \"locationId\": 2483,\n  \"primarySupplierId\": 900,\n  \"isActive\": false,\n  \"createdAt\": {},\n  \"updatedAt\": {}\n}"
+								}
+							]
+						}
+					],
+					"id": "15447960-956fa6b5-ccd6-4151-90f0-619ed6d00835"
+				},
+				{
+					"name": "auth",
+					"item": [
+						{
+							"name": "POST api/auth/login",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "df1b8fb4-aa32-44f2-95c1-05071c006922",
+										"exec": [
+											"if (pm.response.code == 200) {\r",
+											"    let json = pm.response.json();\r",
+											"    pm.collectionVariables.set(\"access_token\", json.token);\r",
+											"}"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"id": "15447960-54b6379d-a519-43ee-949e-78a31598db0f",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"identifier\": \"string\",\n  \"password\": \"string\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/auth/login",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"login"
+									]
+								}
+							},
+							"response": [
+								{
+									"id": "15447960-019a8f4d-64d7-41d7-a7d5-195c93431343",
+									"name": "OK",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "*/*"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"identifier\": \"string\",\n  \"password\": \"string\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/auth/login",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"auth",
+												"login"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "*/*"
+										}
+									],
+									"cookie": [],
+									"responseTime": null,
+									"body": "{\n  \"token\": \"string\",\n  \"role\": \"STAFF\",\n  \"user\": {\n    \"id\": 334,\n    \"firstName\": \"string\",\n    \"lastName\": \"string\",\n    \"username\": \"string\",\n    \"email\": \"string\",\n    \"role\": \"STAFF\"\n  }\n}"
+								}
+							]
+						},
+						{
+							"name": "POST api/auth/refresh",
+							"id": "15447960-6939dd7a-a82f-40c4-ab8d-46561dcb6a95",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"token\": \"string\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/auth/refresh",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"refresh"
+									]
+								}
+							},
+							"response": [
+								{
+									"id": "15447960-f7360b63-0010-4da5-967a-2dbc0eafeaed",
+									"name": "OK",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "*/*"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"token\": \"string\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/auth/refresh",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"auth",
+												"refresh"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "*/*"
+										}
+									],
+									"cookie": [],
+									"responseTime": null,
+									"body": "{\n  \"token\": \"string\",\n  \"role\": \"STAFF\",\n  \"user\": {\n    \"id\": 334,\n    \"firstName\": \"string\",\n    \"lastName\": \"string\",\n    \"username\": \"string\",\n    \"email\": \"string\",\n    \"role\": \"STAFF\"\n  }\n}"
+								}
+							]
+						},
+						{
+							"name": "POST api/auth/forgot",
+							"id": "15447960-6b53b26e-cb3d-48ad-a5c9-697654fe0ab4",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"identifier\": \"string\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/auth/forgot",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"forgot"
+									]
+								}
+							},
+							"response": [
+								{
+									"id": "15447960-3be06341-a336-4da9-9611-863fccb46002",
+									"name": "OK",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "*/*"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"identifier\": \"string\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/auth/forgot",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"auth",
+												"forgot"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "*/*"
+										}
+									],
+									"cookie": [],
+									"responseTime": null,
+									"body": "string"
+								}
+							]
+						}
+					],
+					"id": "15447960-bccd5f2c-2027-437a-a5f7-d4220e470078"
+				},
+				{
+					"name": "movements",
+					"item": [
+						{
+							"name": "POST api/movements",
+							"id": "15447960-11e8dc5f-db6d-4894-8a80-e545a8218cd3",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"itemId\": 5284,\n  \"type\": \"IN\",\n  \"qty\": {},\n  \"unit\": \"string\",\n  \"reasonCode\": \"string\",\n  \"note\": \"string\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/movements",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"movements"
+									]
+								}
+							},
+							"response": [
+								{
+									"id": "15447960-f9705375-838e-4775-8f3f-13a6420ca116",
+									"name": "OK",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "*/*"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"itemId\": 5284,\n  \"type\": \"IN\",\n  \"qty\": {},\n  \"unit\": \"string\",\n  \"reasonCode\": \"string\",\n  \"note\": \"string\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/movements",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"movements"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "*/*"
+										}
+									],
+									"cookie": [],
+									"responseTime": null,
+									"body": "{\n  \"id\": 3017,\n  \"itemId\": 754,\n  \"itemName\": \"string\",\n  \"type\": \"OUT\",\n  \"qty\": {},\n  \"resultingQty\": {},\n  \"unit\": \"string\",\n  \"reasonCode\": \"string\",\n  \"note\": \"string\",\n  \"createdAt\": {}\n}"
+								}
+							]
+						},
+						{
+							"name": "GET api/movements",
+							"id": "15447960-4f96f931-6e2f-489b-8fd8-a56d61ab8e89",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/movements?itemId=6795&type=OUT&reason=string&page=9829&size=9829",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"movements"
+									],
+									"query": [
+										{
+											"key": "itemId",
+											"value": "6795"
+										},
+										{
+											"key": "type",
+											"value": "OUT"
+										},
+										{
+											"key": "reason",
+											"value": "string"
+										},
+										{
+											"key": "page",
+											"value": "9829"
+										},
+										{
+											"key": "size",
+											"value": "9829"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"id": "15447960-52e97e3c-20f9-4710-ba8d-d8ef6224df60",
+									"name": "OK",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "*/*"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/api/movements?itemId=6795&type=OUT&reason=string&page=9829&size=9829",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"movements"
+											],
+											"query": [
+												{
+													"key": "itemId",
+													"value": "6795"
+												},
+												{
+													"key": "type",
+													"value": "OUT"
+												},
+												{
+													"key": "reason",
+													"value": "string"
+												},
+												{
+													"key": "page",
+													"value": "9829"
+												},
+												{
+													"key": "size",
+													"value": "9829"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "*/*"
+										}
+									],
+									"cookie": [],
+									"responseTime": null,
+									"body": "{\n  \"id\": 3017,\n  \"itemId\": 754,\n  \"itemName\": \"string\",\n  \"type\": \"OUT\",\n  \"qty\": {},\n  \"resultingQty\": {},\n  \"unit\": \"string\",\n  \"reasonCode\": \"string\",\n  \"note\": \"string\",\n  \"createdAt\": {}\n}"
+								}
+							]
+						}
+					],
+					"id": "15447960-614d3abe-8def-409f-ab12-766a0ecaade7"
+				},
+				{
+					"name": "suppliers",
+					"item": [
+						{
+							"name": "{id}",
+							"item": [
+								{
+									"name": "PUT api/suppliers/{id}",
+									"id": "15447960-ca16c93d-2737-43e3-a4ca-2140891d4183",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "Accept",
+												"value": "*/*"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"name\": \"string\",\n  \"contactName\": \"string\",\n  \"email\": \"string\",\n  \"phone\": \"string\",\n  \"leadTimeDays\": 9387,\n  \"address\": \"string\",\n  \"notes\": \"string\",\n  \"isActive\": true\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/suppliers/:id",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"suppliers",
+												":id"
+											],
+											"variable": [
+												{
+													"id": "85f80312-6ec5-46d3-aece-f60f80c84351",
+													"key": "id",
+													"value": "6795",
+													"description": "(Required) "
+												}
+											]
+										}
+									},
+									"response": [
+										{
+											"id": "15447960-00fdb219-f190-4f0b-8164-8542bc61ae21",
+											"name": "OK",
+											"originalRequest": {
+												"method": "PUT",
+												"header": [
+													{
+														"key": "Accept",
+														"value": "*/*"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n  \"name\": \"string\",\n  \"contactName\": \"string\",\n  \"email\": \"string\",\n  \"phone\": \"string\",\n  \"leadTimeDays\": 9387,\n  \"address\": \"string\",\n  \"notes\": \"string\",\n  \"isActive\": true\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/api/suppliers/:id",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"suppliers",
+														":id"
+													],
+													"variable": [
+														{
+															"key": "id",
+															"value": "6795",
+															"description": "(Required) "
+														}
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "*/*"
+												}
+											],
+											"cookie": [],
+											"responseTime": null,
+											"body": "{\n  \"id\": 4919,\n  \"name\": \"string\",\n  \"contactName\": \"string\",\n  \"email\": \"string\",\n  \"phone\": \"string\",\n  \"leadTimeDays\": 3716,\n  \"address\": \"string\",\n  \"notes\": \"string\",\n  \"isActive\": false,\n  \"createdAt\": {},\n  \"updatedAt\": {}\n}"
+										}
+									]
+								},
+								{
+									"name": "DELETE api/suppliers/{id}",
+									"id": "15447960-ac68cb53-ebdd-4524-998b-256d7a3b8104",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "DELETE",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "*/*"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/api/suppliers/:id",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"suppliers",
+												":id"
+											],
+											"variable": [
+												{
+													"id": "ea9d51cc-b506-43cd-baa6-430f84538053",
+													"key": "id",
+													"value": "6795",
+													"description": "(Required) "
+												}
+											]
+										}
+									},
+									"response": [
+										{
+											"id": "15447960-7958fe92-9381-467f-83ca-e50f56073ff6",
+											"name": "OK",
+											"originalRequest": {
+												"method": "DELETE",
+												"header": [
+													{
+														"key": "Accept",
+														"value": "*/*"
+													}
+												],
+												"url": {
+													"raw": "{{baseUrl}}/api/suppliers/:id",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"suppliers",
+														":id"
+													],
+													"variable": [
+														{
+															"key": "id",
+															"value": "6795",
+															"description": "(Required) "
+														}
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "*/*"
+												}
+											],
+											"cookie": [],
+											"responseTime": null,
+											"body": "{}"
+										}
+									]
+								},
+								{
+									"name": "GET api/suppliers/{id}",
+									"id": "15447960-525f528e-2a72-4143-820c-46a3af4544f2",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "*/*"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/api/suppliers/:id",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"suppliers",
+												":id"
+											],
+											"variable": [
+												{
+													"id": "7b7e9343-fa1b-4ab4-b11f-46b098239994",
+													"key": "id",
+													"value": "6795",
+													"description": "(Required) "
+												}
+											]
+										}
+									},
+									"response": [
+										{
+											"id": "15447960-f56b17d8-6fee-46fb-9340-9eccde0e6aa4",
+											"name": "OK",
+											"originalRequest": {
+												"method": "GET",
+												"header": [
+													{
+														"key": "Accept",
+														"value": "*/*"
+													}
+												],
+												"url": {
+													"raw": "{{baseUrl}}/api/suppliers/:id",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"suppliers",
+														":id"
+													],
+													"variable": [
+														{
+															"key": "id",
+															"value": "6795",
+															"description": "(Required) "
+														}
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "*/*"
+												}
+											],
+											"cookie": [],
+											"responseTime": null,
+											"body": "{\n  \"id\": 4919,\n  \"name\": \"string\",\n  \"contactName\": \"string\",\n  \"email\": \"string\",\n  \"phone\": \"string\",\n  \"leadTimeDays\": 3716,\n  \"address\": \"string\",\n  \"notes\": \"string\",\n  \"isActive\": false,\n  \"createdAt\": {},\n  \"updatedAt\": {}\n}"
+										}
+									]
+								}
+							],
+							"id": "15447960-fdfc95fa-24de-4ff4-9ff1-690dfd43ba9b"
+						},
+						{
+							"name": "POST api/suppliers",
+							"id": "15447960-fe4b4e83-6bea-449d-aaa0-07023374f2af",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"name\": \"string\",\n  \"contactName\": \"string\",\n  \"email\": \"string\",\n  \"phone\": \"string\",\n  \"leadTimeDays\": 9387,\n  \"address\": \"string\",\n  \"notes\": \"string\",\n  \"isActive\": true\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/suppliers",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"suppliers"
+									]
+								}
+							},
+							"response": [
+								{
+									"id": "15447960-c1d4aaf2-2ae3-44d9-b8ef-cdcc40cfe69f",
+									"name": "OK",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "*/*"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"name\": \"string\",\n  \"contactName\": \"string\",\n  \"email\": \"string\",\n  \"phone\": \"string\",\n  \"leadTimeDays\": 9387,\n  \"address\": \"string\",\n  \"notes\": \"string\",\n  \"isActive\": true\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/suppliers",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"suppliers"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "*/*"
+										}
+									],
+									"cookie": [],
+									"responseTime": null,
+									"body": "{\n  \"id\": 4919,\n  \"name\": \"string\",\n  \"contactName\": \"string\",\n  \"email\": \"string\",\n  \"phone\": \"string\",\n  \"leadTimeDays\": 3716,\n  \"address\": \"string\",\n  \"notes\": \"string\",\n  \"isActive\": false,\n  \"createdAt\": {},\n  \"updatedAt\": {}\n}"
+								}
+							]
+						},
+						{
+							"name": "GET api/suppliers",
+							"id": "15447960-d95dd5ca-5d2b-412f-a802-47c738603345",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/suppliers?search=string&page=9829&size=9829",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"suppliers"
+									],
+									"query": [
+										{
+											"key": "search",
+											"value": "string"
+										},
+										{
+											"key": "page",
+											"value": "9829"
+										},
+										{
+											"key": "size",
+											"value": "9829"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"id": "15447960-9ddc5ecd-52a8-4134-a53c-fc366ebed5ae",
+									"name": "OK",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "*/*"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/api/suppliers?search=string&page=9829&size=9829",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"suppliers"
+											],
+											"query": [
+												{
+													"key": "search",
+													"value": "string"
+												},
+												{
+													"key": "page",
+													"value": "9829"
+												},
+												{
+													"key": "size",
+													"value": "9829"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "*/*"
+										}
+									],
+									"cookie": [],
+									"responseTime": null,
+									"body": "{\n  \"id\": 4919,\n  \"name\": \"string\",\n  \"contactName\": \"string\",\n  \"email\": \"string\",\n  \"phone\": \"string\",\n  \"leadTimeDays\": 3716,\n  \"address\": \"string\",\n  \"notes\": \"string\",\n  \"isActive\": false,\n  \"createdAt\": {},\n  \"updatedAt\": {}\n}"
+								}
+							]
+						}
+					],
+					"id": "15447960-ee8a73de-0975-49e5-b024-f6fbff7ad175"
+				},
+				{
+					"name": "pos",
+					"item": [
+						{
+							"name": "{id}",
+							"item": [
+								{
+									"name": "PUT api/pos/{id}",
+									"id": "15447960-d66be8e3-03aa-40aa-8dd1-cd55a3b04f91",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "Accept",
+												"value": "*/*"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"supplierId\": 4938,\n  \"eta\": {},\n  \"lines\": [\n    {\n      \"itemId\": 3562,\n      \"qtyOrdered\": {},\n      \"unit\": \"string\",\n      \"price\": {}\n    },\n    {\n      \"itemId\": 1222,\n      \"qtyOrdered\": {},\n      \"unit\": \"string\",\n      \"price\": {}\n    }\n  ]\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/pos/:id",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"pos",
+												":id"
+											],
+											"variable": [
+												{
+													"id": "b934af50-4fc2-40a4-a78b-57d01a854235",
+													"key": "id",
+													"value": "6795",
+													"description": "(Required) "
+												}
+											]
+										}
+									},
+									"response": [
+										{
+											"id": "15447960-7451822f-6b8c-44b7-b921-6663f73997b2",
+											"name": "OK",
+											"originalRequest": {
+												"method": "PUT",
+												"header": [
+													{
+														"key": "Accept",
+														"value": "*/*"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n  \"supplierId\": 621,\n  \"eta\": {},\n  \"lines\": [\n    {\n      \"itemId\": 9047,\n      \"qtyOrdered\": {},\n      \"unit\": \"string\",\n      \"price\": {}\n    },\n    {\n      \"itemId\": 3060,\n      \"qtyOrdered\": {},\n      \"unit\": \"string\",\n      \"price\": {}\n    }\n  ]\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/api/pos/:id",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"pos",
+														":id"
+													],
+													"variable": [
+														{
+															"key": "id",
+															"value": "6795",
+															"description": "(Required) "
+														}
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "*/*"
+												}
+											],
+											"cookie": [],
+											"responseTime": null,
+											"body": "{\n  \"id\": 8342,\n  \"number\": \"string\",\n  \"supplierId\": 5052,\n  \"supplierName\": \"string\",\n  \"status\": \"CANCELLED\",\n  \"eta\": {},\n  \"createdById\": 4866,\n  \"createdByName\": \"string\",\n  \"createdAt\": {},\n  \"updatedAt\": {},\n  \"lines\": [\n    {\n      \"id\": 4664,\n      \"itemId\": 1171,\n      \"itemName\": \"string\",\n      \"qtyOrdered\": {},\n      \"qtyReceived\": {},\n      \"unit\": \"string\",\n      \"price\": {}\n    },\n    {\n      \"id\": 978,\n      \"itemId\": 7912,\n      \"itemName\": \"string\",\n      \"qtyOrdered\": {},\n      \"qtyReceived\": {},\n      \"unit\": \"string\",\n      \"price\": {}\n    }\n  ]\n}"
+										}
+									]
+								},
+								{
+									"name": "GET api/pos/{id}",
+									"id": "15447960-eb023237-907e-44f1-809b-c9ba761a9442",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "*/*"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/api/pos/:id",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"pos",
+												":id"
+											],
+											"variable": [
+												{
+													"id": "a8592b7b-d7a0-4afc-abe9-a3a8183d8549",
+													"key": "id",
+													"value": "6795",
+													"description": "(Required) "
+												}
+											]
+										}
+									},
+									"response": [
+										{
+											"id": "15447960-d6ca5cb8-6b63-4998-9e97-da74e979244d",
+											"name": "OK",
+											"originalRequest": {
+												"method": "GET",
+												"header": [
+													{
+														"key": "Accept",
+														"value": "*/*"
+													}
+												],
+												"url": {
+													"raw": "{{baseUrl}}/api/pos/:id",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"pos",
+														":id"
+													],
+													"variable": [
+														{
+															"key": "id",
+															"value": "6795",
+															"description": "(Required) "
+														}
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "*/*"
+												}
+											],
+											"cookie": [],
+											"responseTime": null,
+											"body": "{\n  \"id\": 8342,\n  \"number\": \"string\",\n  \"supplierId\": 5052,\n  \"supplierName\": \"string\",\n  \"status\": \"CANCELLED\",\n  \"eta\": {},\n  \"createdById\": 4866,\n  \"createdByName\": \"string\",\n  \"createdAt\": {},\n  \"updatedAt\": {},\n  \"lines\": [\n    {\n      \"id\": 4664,\n      \"itemId\": 1171,\n      \"itemName\": \"string\",\n      \"qtyOrdered\": {},\n      \"qtyReceived\": {},\n      \"unit\": \"string\",\n      \"price\": {}\n    },\n    {\n      \"id\": 978,\n      \"itemId\": 7912,\n      \"itemName\": \"string\",\n      \"qtyOrdered\": {},\n      \"qtyReceived\": {},\n      \"unit\": \"string\",\n      \"price\": {}\n    }\n  ]\n}"
+										}
+									]
+								},
+								{
+									"name": "POST api/pos/{id}/submit",
+									"id": "15447960-41ab8714-eca2-4e71-8589-63de3dac8d92",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "*/*"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/api/pos/:id/submit",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"pos",
+												":id",
+												"submit"
+											],
+											"variable": [
+												{
+													"id": "d7d59414-2d54-4041-ab37-a9523bd87fd1",
+													"key": "id",
+													"value": "6795",
+													"description": "(Required) "
+												}
+											]
+										}
+									},
+									"response": [
+										{
+											"id": "15447960-8ec12e1d-9164-4e18-8cdc-7d8558b4d49a",
+											"name": "OK",
+											"originalRequest": {
+												"method": "POST",
+												"header": [
+													{
+														"key": "Accept",
+														"value": "*/*"
+													}
+												],
+												"url": {
+													"raw": "{{baseUrl}}/api/pos/:id/submit",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"pos",
+														":id",
+														"submit"
+													],
+													"variable": [
+														{
+															"key": "id",
+															"value": "6795",
+															"description": "(Required) "
+														}
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "*/*"
+												}
+											],
+											"cookie": [],
+											"responseTime": null,
+											"body": "{\n  \"id\": 8342,\n  \"number\": \"string\",\n  \"supplierId\": 5052,\n  \"supplierName\": \"string\",\n  \"status\": \"CANCELLED\",\n  \"eta\": {},\n  \"createdById\": 4866,\n  \"createdByName\": \"string\",\n  \"createdAt\": {},\n  \"updatedAt\": {},\n  \"lines\": [\n    {\n      \"id\": 4664,\n      \"itemId\": 1171,\n      \"itemName\": \"string\",\n      \"qtyOrdered\": {},\n      \"qtyReceived\": {},\n      \"unit\": \"string\",\n      \"price\": {}\n    },\n    {\n      \"id\": 978,\n      \"itemId\": 7912,\n      \"itemName\": \"string\",\n      \"qtyOrdered\": {},\n      \"qtyReceived\": {},\n      \"unit\": \"string\",\n      \"price\": {}\n    }\n  ]\n}"
+										}
+									]
+								},
+								{
+									"name": "POST api/pos/{id}/receive",
+									"id": "15447960-161ccaa9-a9e3-4cca-8e69-6622131f3711",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "Accept",
+												"value": "*/*"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "[\n  {\n    \"lineId\": 220,\n    \"receivedQty\": {}\n  },\n  {\n    \"lineId\": 152,\n    \"receivedQty\": {}\n  }\n]",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/pos/:id/receive",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"pos",
+												":id",
+												"receive"
+											],
+											"variable": [
+												{
+													"id": "1a80baba-3751-4eef-9bc9-150ae943809a",
+													"key": "id",
+													"value": "6795",
+													"description": "(Required) "
+												}
+											]
+										}
+									},
+									"response": [
+										{
+											"id": "15447960-50ef5afc-c709-48ef-878d-12f820d4c67c",
+											"name": "OK",
+											"originalRequest": {
+												"method": "POST",
+												"header": [
+													{
+														"key": "Accept",
+														"value": "*/*"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "[\n  {\n    \"lineId\": 149,\n    \"receivedQty\": {}\n  },\n  {\n    \"lineId\": 439,\n    \"receivedQty\": {}\n  }\n]",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/api/pos/:id/receive",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"pos",
+														":id",
+														"receive"
+													],
+													"variable": [
+														{
+															"key": "id",
+															"value": "6795",
+															"description": "(Required) "
+														}
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "*/*"
+												}
+											],
+											"cookie": [],
+											"responseTime": null,
+											"body": "{\n  \"id\": 8342,\n  \"number\": \"string\",\n  \"supplierId\": 5052,\n  \"supplierName\": \"string\",\n  \"status\": \"CANCELLED\",\n  \"eta\": {},\n  \"createdById\": 4866,\n  \"createdByName\": \"string\",\n  \"createdAt\": {},\n  \"updatedAt\": {},\n  \"lines\": [\n    {\n      \"id\": 4664,\n      \"itemId\": 1171,\n      \"itemName\": \"string\",\n      \"qtyOrdered\": {},\n      \"qtyReceived\": {},\n      \"unit\": \"string\",\n      \"price\": {}\n    },\n    {\n      \"id\": 978,\n      \"itemId\": 7912,\n      \"itemName\": \"string\",\n      \"qtyOrdered\": {},\n      \"qtyReceived\": {},\n      \"unit\": \"string\",\n      \"price\": {}\n    }\n  ]\n}"
+										}
+									]
+								},
+								{
+									"name": "POST api/pos/{id}/cancel",
+									"id": "15447960-2e0a3314-edd1-4de4-a585-aaae574dcb59",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "*/*"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/api/pos/:id/cancel",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"pos",
+												":id",
+												"cancel"
+											],
+											"variable": [
+												{
+													"id": "f23c0801-e71f-4feb-9b67-4479ee8b10a3",
+													"key": "id",
+													"value": "6795",
+													"description": "(Required) "
+												}
+											]
+										}
+									},
+									"response": [
+										{
+											"id": "15447960-c2e4ae48-58a9-4863-8b4f-6e28131c4f0d",
+											"name": "OK",
+											"originalRequest": {
+												"method": "POST",
+												"header": [
+													{
+														"key": "Accept",
+														"value": "*/*"
+													}
+												],
+												"url": {
+													"raw": "{{baseUrl}}/api/pos/:id/cancel",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"pos",
+														":id",
+														"cancel"
+													],
+													"variable": [
+														{
+															"key": "id",
+															"value": "6795",
+															"description": "(Required) "
+														}
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "*/*"
+												}
+											],
+											"cookie": [],
+											"responseTime": null,
+											"body": "{\n  \"id\": 8342,\n  \"number\": \"string\",\n  \"supplierId\": 5052,\n  \"supplierName\": \"string\",\n  \"status\": \"CANCELLED\",\n  \"eta\": {},\n  \"createdById\": 4866,\n  \"createdByName\": \"string\",\n  \"createdAt\": {},\n  \"updatedAt\": {},\n  \"lines\": [\n    {\n      \"id\": 4664,\n      \"itemId\": 1171,\n      \"itemName\": \"string\",\n      \"qtyOrdered\": {},\n      \"qtyReceived\": {},\n      \"unit\": \"string\",\n      \"price\": {}\n    },\n    {\n      \"id\": 978,\n      \"itemId\": 7912,\n      \"itemName\": \"string\",\n      \"qtyOrdered\": {},\n      \"qtyReceived\": {},\n      \"unit\": \"string\",\n      \"price\": {}\n    }\n  ]\n}"
+										}
+									]
+								}
+							],
+							"id": "15447960-463f605e-c426-431c-99ca-50c96c4ef529"
+						},
+						{
+							"name": "POST api/pos",
+							"id": "15447960-a831b9fa-083e-465d-91ef-935b90d78427",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"supplierId\": 4938,\n  \"eta\": {},\n  \"lines\": [\n    {\n      \"itemId\": 3562,\n      \"qtyOrdered\": {},\n      \"unit\": \"string\",\n      \"price\": {}\n    },\n    {\n      \"itemId\": 1222,\n      \"qtyOrdered\": {},\n      \"unit\": \"string\",\n      \"price\": {}\n    }\n  ]\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/pos",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"pos"
+									]
+								}
+							},
+							"response": [
+								{
+									"id": "15447960-2588a601-189a-4955-a5b2-5c28f1e0e123",
+									"name": "OK",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "*/*"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"supplierId\": 621,\n  \"eta\": {},\n  \"lines\": [\n    {\n      \"itemId\": 9047,\n      \"qtyOrdered\": {},\n      \"unit\": \"string\",\n      \"price\": {}\n    },\n    {\n      \"itemId\": 3060,\n      \"qtyOrdered\": {},\n      \"unit\": \"string\",\n      \"price\": {}\n    }\n  ]\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/pos",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"pos"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "*/*"
+										}
+									],
+									"cookie": [],
+									"responseTime": null,
+									"body": "{\n  \"id\": 8342,\n  \"number\": \"string\",\n  \"supplierId\": 5052,\n  \"supplierName\": \"string\",\n  \"status\": \"CANCELLED\",\n  \"eta\": {},\n  \"createdById\": 4866,\n  \"createdByName\": \"string\",\n  \"createdAt\": {},\n  \"updatedAt\": {},\n  \"lines\": [\n    {\n      \"id\": 4664,\n      \"itemId\": 1171,\n      \"itemName\": \"string\",\n      \"qtyOrdered\": {},\n      \"qtyReceived\": {},\n      \"unit\": \"string\",\n      \"price\": {}\n    },\n    {\n      \"id\": 978,\n      \"itemId\": 7912,\n      \"itemName\": \"string\",\n      \"qtyOrdered\": {},\n      \"qtyReceived\": {},\n      \"unit\": \"string\",\n      \"price\": {}\n    }\n  ]\n}"
+								}
+							]
+						},
+						{
+							"name": "GET api/pos",
+							"id": "15447960-0a80731f-60f8-4e70-9ed7-a59da3165cbf",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/pos?status=CANCELLED&supplierId=6795&page=9829&size=9829",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"pos"
+									],
+									"query": [
+										{
+											"key": "status",
+											"value": "CANCELLED"
+										},
+										{
+											"key": "supplierId",
+											"value": "6795"
+										},
+										{
+											"key": "page",
+											"value": "9829"
+										},
+										{
+											"key": "size",
+											"value": "9829"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"id": "15447960-2a941fc5-4a71-4774-bfd8-18c683a59f79",
+									"name": "OK",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "*/*"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/api/pos?status=CANCELLED&supplierId=6795&page=9829&size=9829",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"pos"
+											],
+											"query": [
+												{
+													"key": "status",
+													"value": "CANCELLED"
+												},
+												{
+													"key": "supplierId",
+													"value": "6795"
+												},
+												{
+													"key": "page",
+													"value": "9829"
+												},
+												{
+													"key": "size",
+													"value": "9829"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "*/*"
+										}
+									],
+									"cookie": [],
+									"responseTime": null,
+									"body": "{\n  \"id\": 8342,\n  \"number\": \"string\",\n  \"supplierId\": 5052,\n  \"supplierName\": \"string\",\n  \"status\": \"CANCELLED\",\n  \"eta\": {},\n  \"createdById\": 4866,\n  \"createdByName\": \"string\",\n  \"createdAt\": {},\n  \"updatedAt\": {},\n  \"lines\": [\n    {\n      \"id\": 4664,\n      \"itemId\": 1171,\n      \"itemName\": \"string\",\n      \"qtyOrdered\": {},\n      \"qtyReceived\": {},\n      \"unit\": \"string\",\n      \"price\": {}\n    },\n    {\n      \"id\": 978,\n      \"itemId\": 7912,\n      \"itemName\": \"string\",\n      \"qtyOrdered\": {},\n      \"qtyReceived\": {},\n      \"unit\": \"string\",\n      \"price\": {}\n    }\n  ]\n}"
+								}
+							]
+						}
+					],
+					"id": "15447960-e663777f-726c-4df3-bdfa-4282719e6159"
+				},
+				{
+					"name": "reference",
+					"item": [
+						{
+							"name": "PUT api/reference/{type}",
+							"id": "15447960-47c6570e-a86e-46af-97ff-929362465759",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"values\": [\n    \"string\",\n    \"string\"\n  ]\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/reference/:type",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"reference",
+										":type"
+									],
+									"variable": [
+										{
+											"id": "64ddf4a6-3c6a-4bd0-99d2-a871a500423d",
+											"key": "type",
+											"value": "string",
+											"description": "(Required) "
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"id": "15447960-77e33f02-8870-4338-91e8-1348716994fa",
+									"name": "OK",
+									"originalRequest": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "*/*"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"values\": [\n    \"string\",\n    \"string\"\n  ]\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/reference/:type",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"reference",
+												":type"
+											],
+											"variable": [
+												{
+													"key": "type",
+													"value": "string",
+													"description": "(Required) "
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "*/*"
+										}
+									],
+									"cookie": [],
+									"responseTime": null,
+									"body": "[\n  \"string\",\n  \"string\"\n]"
+								}
+							]
+						},
+						{
+							"name": "GET api/reference/units",
+							"id": "15447960-3fa6345f-d7f0-41f3-bb7f-fbbb1c8b439c",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/reference/units",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"reference",
+										"units"
+									]
+								}
+							},
+							"response": [
+								{
+									"id": "15447960-1ad26615-3f49-4836-8839-e191aa4624db",
+									"name": "OK",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "*/*"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/api/reference/units",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"reference",
+												"units"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "*/*"
+										}
+									],
+									"cookie": [],
+									"responseTime": null,
+									"body": "[\n  \"string\",\n  \"string\"\n]"
+								}
+							]
+						},
+						{
+							"name": "GET api/reference/categories",
+							"id": "15447960-204ba19d-83b9-4b15-bd52-58a55bced090",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/reference/categories",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"reference",
+										"categories"
+									]
+								}
+							},
+							"response": [
+								{
+									"id": "15447960-80a6185c-37f8-496f-9cd6-85e6cdfedf93",
+									"name": "OK",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "*/*"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/api/reference/categories",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"reference",
+												"categories"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "*/*"
+										}
+									],
+									"cookie": [],
+									"responseTime": null,
+									"body": "[\n  \"string\",\n  \"string\"\n]"
+								}
+							]
+						},
+						{
+							"name": "GET api/reference/reason-codes",
+							"id": "15447960-eeab3d62-f93c-4f14-91e5-c5e33d447af0",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/reference/reason-codes",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"reference",
+										"reason-codes"
+									]
+								}
+							},
+							"response": [
+								{
+									"id": "15447960-dae49cc6-3260-4c7e-a39f-227df0449660",
+									"name": "OK",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "*/*"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/api/reference/reason-codes",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"reference",
+												"reason-codes"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "*/*"
+										}
+									],
+									"cookie": [],
+									"responseTime": null,
+									"body": "[\n  \"string\",\n  \"string\"\n]"
+								}
+							]
+						}
+					],
+					"id": "15447960-4d007991-c79a-4c02-abfb-2b63dfabace1"
+				},
+				{
+					"name": "alerts",
+					"item": [
+						{
+							"name": "POST api/alerts/dismiss",
+							"id": "15447960-70e6b221-55f1-4e68-afeb-1384070b759e",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/alerts/dismiss",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"alerts",
+										"dismiss"
+									]
+								}
+							},
+							"response": [
+								{
+									"id": "15447960-f1f655fb-5005-409d-b27d-4be77082cb8f",
+									"name": "OK",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "*/*"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/api/alerts/dismiss",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"alerts",
+												"dismiss"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "*/*"
+										}
+									],
+									"cookie": [],
+									"responseTime": null,
+									"body": "{}"
+								}
+							]
+						},
+						{
+							"name": "GET api/alerts/low-stock",
+							"id": "15447960-012d9851-5f5d-4275-ada9-66ff0e42ee55",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/alerts/low-stock",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"alerts",
+										"low-stock"
+									]
+								}
+							},
+							"response": [
+								{
+									"id": "15447960-49d9439f-d6bd-4939-9b56-1c0de409f5d3",
+									"name": "OK",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "*/*"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/api/alerts/low-stock",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"alerts",
+												"low-stock"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "*/*"
+										}
+									],
+									"cookie": [],
+									"responseTime": null,
+									"body": "[\n  {\n    \"itemId\": 2810,\n    \"sku\": \"string\",\n    \"name\": \"string\",\n    \"category\": \"string\",\n    \"currentQty\": {},\n    \"minLevel\": {},\n    \"shortage\": {}\n  },\n  {\n    \"itemId\": 5254,\n    \"sku\": \"string\",\n    \"name\": \"string\",\n    \"category\": \"string\",\n    \"currentQty\": {},\n    \"minLevel\": {},\n    \"shortage\": {}\n  }\n]"
+								}
+							]
+						}
+					],
+					"id": "15447960-a856fe06-6e05-4863-a54c-d956e2beefd4"
+				},
+				{
+					"name": "reports",
+					"item": [
+						{
+							"name": "GET api/reports/usage",
+							"id": "15447960-f70e7cc5-fac5-4bdc-ba43-25b5dc8351ef",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/reports/usage?limit=9829",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"reports",
+										"usage"
+									],
+									"query": [
+										{
+											"key": "limit",
+											"value": "9829"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"id": "15447960-9576c884-a65a-470b-ada1-37bbfb03c4d7",
+									"name": "OK",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "*/*"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/api/reports/usage?limit=9829",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"reports",
+												"usage"
+											],
+											"query": [
+												{
+													"key": "limit",
+													"value": "9829"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "*/*"
+										}
+									],
+									"cookie": [],
+									"responseTime": null,
+									"body": "[\n  {\n    \"itemId\": 2478,\n    \"sku\": \"string\",\n    \"name\": \"str\",\n    \"totalIn\": {},\n    \"totalOut\": {},\n    \"netUsage\": {}\n  },\n  {\n    \"itemId\": 3547,\n    \"sku\": \"string\",\n    \"name\": \"string\",\n    \"totalIn\": {},\n    \"totalOut\": {},\n    \"netUsage\": {}\n  }\n]"
+								}
+							]
+						},
+						{
+							"name": "GET api/reports/top-movers",
+							"id": "15447960-c8501fdc-12a5-44a4-bfea-a22a36c8dc40",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/reports/top-movers?limit=9829",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"reports",
+										"top-movers"
+									],
+									"query": [
+										{
+											"key": "limit",
+											"value": "9829"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"id": "15447960-3ca7f277-c79c-48b1-bb8b-4d7755ec076b",
+									"name": "OK",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "*/*"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/api/reports/top-movers?limit=9829",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"reports",
+												"top-movers"
+											],
+											"query": [
+												{
+													"key": "limit",
+													"value": "9829"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "*/*"
+										}
+									],
+									"cookie": [],
+									"responseTime": null,
+									"body": "[\n  {\n    \"itemId\": 7803,\n    \"sku\": \"string\",\n    \"name\": \"string\",\n    \"totalMovement\": {},\n    \"totalIn\": {},\n    \"totalOut\": {}\n  },\n  {\n    \"itemId\": 4613,\n    \"sku\": \"string\",\n    \"name\": \"string\",\n    \"totalMovement\": {},\n    \"totalIn\": {},\n    \"totalOut\": {}\n  }\n]"
+								}
+							]
+						},
+						{
+							"name": "GET api/reports/export.csv",
+							"id": "15447960-e381410b-0e69-4882-95d7-a8db1d0cefab",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "text/csv"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/reports/export.csv?type=string&limit=9829",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"reports",
+										"export.csv"
+									],
+									"query": [
+										{
+											"key": "type",
+											"value": "string",
+											"description": "(Required) "
+										},
+										{
+											"key": "limit",
+											"value": "9829"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"id": "15447960-a3cf7fc0-38ec-4cd1-a93e-fc8f76ed60e1",
+									"name": "OK",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "text/csv"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/api/reports/export.csv?type=string&limit=9829",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"reports",
+												"export.csv"
+											],
+											"query": [
+												{
+													"key": "type",
+													"value": "string"
+												},
+												{
+													"key": "limit",
+													"value": "9829"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "text/csv"
+										}
+									],
+									"cookie": [],
+									"responseTime": null,
+									"body": ""
+								}
+							]
+						}
+					],
+					"id": "15447960-a44ca696-0598-4fca-b1ab-1aa95a1dd812"
+				},
+				{
+					"name": "GET api/users/me",
+					"id": "15447960-c510e1e3-9d10-4210-ab0a-a1911dd151ce",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "*/*"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/users/me",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"me"
+							]
+						}
+					},
+					"response": [
+						{
+							"id": "15447960-aafe1013-e3f3-438f-8a51-8319b863a1dd",
+							"name": "OK",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/users/me",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"users",
+										"me"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "*/*"
+								}
+							],
+							"cookie": [],
+							"responseTime": null,
+							"body": "{\n  \"id\": 9351,\n  \"firstName\": \"string\",\n  \"lastName\": \"string\",\n  \"username\": \"string\",\n  \"email\": \"string\",\n  \"role\": \"STAFF\"\n}"
+						}
+					]
+				}
+			],
+			"id": "15447960-7f846a0e-b2e7-410d-a74c-8b7113dc0724"
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{access_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "27505777-3099-4a8e-9443-efe68c158ee8",
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "63b6c4c5-7eb2-4ae9-85ae-66588a00713b",
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "access_token",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
