@@ -4,9 +4,13 @@ import hr.algebra.cloudbased_inventory_management_system.dto.MovementRequest;
 import hr.algebra.cloudbased_inventory_management_system.dto.MovementResponse;
 import hr.algebra.cloudbased_inventory_management_system.entity.Item;
 import hr.algebra.cloudbased_inventory_management_system.entity.MovementType;
+import hr.algebra.cloudbased_inventory_management_system.entity.PurchaseOrder;
+import hr.algebra.cloudbased_inventory_management_system.entity.PurchaseOrderLine;
 import hr.algebra.cloudbased_inventory_management_system.entity.ReferenceDataType;
 import hr.algebra.cloudbased_inventory_management_system.entity.StockMovement;
 import hr.algebra.cloudbased_inventory_management_system.repository.ItemRepository;
+import hr.algebra.cloudbased_inventory_management_system.repository.PurchaseOrderLineRepository;
+import hr.algebra.cloudbased_inventory_management_system.repository.PurchaseOrderRepository;
 import hr.algebra.cloudbased_inventory_management_system.repository.ReferenceDataRepository;
 import hr.algebra.cloudbased_inventory_management_system.repository.StockMovementRepository;
 import hr.algebra.cloudbased_inventory_management_system.repository.StockMovementSpecifications;
@@ -27,6 +31,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.Objects;
 
 @Service
 public class MovementService {
@@ -36,17 +41,23 @@ public class MovementService {
     private final ItemRepository itemRepository;
     private final StockMovementRepository stockMovementRepository;
     private final ReferenceDataRepository referenceDataRepository;
+    private final PurchaseOrderRepository purchaseOrderRepository;
+    private final PurchaseOrderLineRepository purchaseOrderLineRepository;
     private final TransactionTemplate transactionTemplate;
 
     public MovementService(
             ItemRepository itemRepository,
             StockMovementRepository stockMovementRepository,
             ReferenceDataRepository referenceDataRepository,
+            PurchaseOrderRepository purchaseOrderRepository,
+            PurchaseOrderLineRepository purchaseOrderLineRepository,
             PlatformTransactionManager transactionManager
     ) {
         this.itemRepository = itemRepository;
         this.stockMovementRepository = stockMovementRepository;
         this.referenceDataRepository = referenceDataRepository;
+        this.purchaseOrderRepository = purchaseOrderRepository;
+        this.purchaseOrderLineRepository = purchaseOrderLineRepository;
         this.transactionTemplate = new TransactionTemplate(transactionManager);
     }
 
@@ -109,6 +120,9 @@ public class MovementService {
 
         String createdBy = resolveCurrentUsername();
 
+        PurchaseOrderLine purchaseOrderLine = resolvePurchaseOrderLine(request, item);
+        PurchaseOrder purchaseOrder = resolvePurchaseOrder(request, purchaseOrderLine);
+
         StockMovement movement = StockMovement.builder()
                 .item(item)
                 .type(request.getType())
@@ -119,6 +133,8 @@ public class MovementService {
                 .note(note)
                 .clientRequestId(clientRequestId)
                 .createdBy(createdBy)
+                .purchaseOrder(purchaseOrder)
+                .purchaseOrderLine(purchaseOrderLine)
                 .build();
 
         try {
@@ -158,8 +174,41 @@ public class MovementService {
                 .note(movement.getNote())
                 .clientRequestId(movement.getClientRequestId())
                 .createdBy(movement.getCreatedBy())
+                .purchaseOrderId(movement.getPurchaseOrder() != null ? movement.getPurchaseOrder().getId() : null)
+                .purchaseOrderNumber(movement.getPurchaseOrder() != null ? movement.getPurchaseOrder().getNumber() : null)
+                .purchaseOrderLineId(movement.getPurchaseOrderLine() != null ? movement.getPurchaseOrderLine().getId() : null)
                 .createdAt(movement.getCreatedAt())
                 .build();
+    }
+
+    private PurchaseOrderLine resolvePurchaseOrderLine(MovementRequest request, Item item) {
+        Long purchaseOrderLineId = request.getPurchaseOrderLineId();
+        if (purchaseOrderLineId == null) {
+            return null;
+        }
+        PurchaseOrderLine purchaseOrderLine = purchaseOrderLineRepository.findById(purchaseOrderLineId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Purchase order line not found"));
+        if (purchaseOrderLine.getItem() == null || !Objects.equals(purchaseOrderLine.getItem().getId(), item.getId())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Purchase order line does not match movement item");
+        }
+        Long purchaseOrderId = request.getPurchaseOrderId();
+        if (purchaseOrderId != null && (purchaseOrderLine.getPurchaseOrder() == null
+                || !Objects.equals(purchaseOrderLine.getPurchaseOrder().getId(), purchaseOrderId))) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Purchase order mismatch for provided line");
+        }
+        return purchaseOrderLine;
+    }
+
+    private PurchaseOrder resolvePurchaseOrder(MovementRequest request, PurchaseOrderLine purchaseOrderLine) {
+        if (purchaseOrderLine != null) {
+            return purchaseOrderLine.getPurchaseOrder();
+        }
+        Long purchaseOrderId = request.getPurchaseOrderId();
+        if (purchaseOrderId == null) {
+            return null;
+        }
+        return purchaseOrderRepository.findById(purchaseOrderId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Purchase order not found"));
     }
 
     private String validateUnit(String requestedUnit, String itemUnit) {

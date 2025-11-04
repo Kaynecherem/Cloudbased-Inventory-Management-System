@@ -54,6 +54,14 @@ public class StockMovement {
     @Column(nullable = false, length = 150, updatable = false)
     private String createdBy;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "po_id")
+    private PurchaseOrder purchaseOrder;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "po_line_id")
+    private PurchaseOrderLine purchaseOrderLine;
+
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
     private Instant createdAt;

@@ -1,6 +1,8 @@
 package hr.algebra.cloudbased_inventory_management_system.dto;
 
 import hr.algebra.cloudbased_inventory_management_system.entity.ItemActivityType;
+import hr.algebra.cloudbased_inventory_management_system.entity.MovementType;
+import hr.algebra.cloudbased_inventory_management_system.entity.PurchaseOrderStatus;
 import lombok.Builder;
 import lombok.Value;
 
@@ -11,8 +13,22 @@ import java.time.Instant;
 @Builder
 public class ItemActivityResponse {
     Long id;
-    ItemActivityType type;
-    BigDecimal quantityChange;
+    ItemActivityEventType eventType;
+    MovementType movementType;
+    BigDecimal quantity;
+    BigDecimal resultingQuantity;
+    String unit;
+    String reasonCode;
+    String note;
+    String createdBy;
+    Long purchaseOrderId;
+    String purchaseOrderNumber;
+    PurchaseOrderStatus purchaseOrderStatus;
+    Long purchaseOrderLineId;
+    BigDecimal purchaseOrderLineQtyOrdered;
+    BigDecimal purchaseOrderLineQtyReceived;
+    String purchaseOrderLineUnit;
+    ItemActivityType itemEventType;
     String description;
     Instant createdAt;
 }

@@ -1,5 +1,6 @@
 package hr.algebra.cloudbased_inventory_management_system.service;
 
+import hr.algebra.cloudbased_inventory_management_system.dto.ItemActivityEventType;
 import hr.algebra.cloudbased_inventory_management_system.dto.ItemActivityResponse;
 import hr.algebra.cloudbased_inventory_management_system.dto.ItemRequest;
 import hr.algebra.cloudbased_inventory_management_system.dto.ItemResponse;
@@ -10,6 +11,7 @@ import hr.algebra.cloudbased_inventory_management_system.entity.ItemActivityType
 import hr.algebra.cloudbased_inventory_management_system.entity.ItemSupplier;
 import hr.algebra.cloudbased_inventory_management_system.entity.PurchaseOrderStatus;
 import hr.algebra.cloudbased_inventory_management_system.entity.Supplier;
+import hr.algebra.cloudbased_inventory_management_system.repository.ItemActivityQueryRepository;
 import hr.algebra.cloudbased_inventory_management_system.repository.ItemActivityRepository;
 import hr.algebra.cloudbased_inventory_management_system.repository.ItemRepository;
 import hr.algebra.cloudbased_inventory_management_system.repository.ItemSpecifications;
@@ -40,6 +42,7 @@ public class ItemService {
 
     private final ItemRepository itemRepository;
     private final ItemActivityRepository itemActivityRepository;
+    private final ItemActivityQueryRepository itemActivityQueryRepository;
     private final ItemMapper itemMapper;
     private final PurchaseOrderLineRepository purchaseOrderLineRepository;
     private final SupplierRepository supplierRepository;
@@ -115,7 +118,7 @@ public class ItemService {
         if (!itemRepository.existsByIdAndIsActiveTrue(itemId)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Item not found");
         }
-        return itemActivityRepository.findByItemIdOrderByCreatedAtDesc(itemId, pageable)
+        return itemActivityQueryRepository.findItemActivity(itemId, pageable)
                 .map(this::toActivityResponse);
     }
 
@@ -174,14 +177,72 @@ public class ItemService {
         return BigDecimal.ZERO.compareTo(change) == 0 ? null : change;
     }
 
-    private ItemActivityResponse toActivityResponse(ItemActivity activity) {
+    private ItemActivityResponse toActivityResponse(ItemActivityQueryRepository.ItemActivityRow row) {
+        ItemActivityEventType eventType = determineEventType(row);
         return ItemActivityResponse.builder()
-                .id(activity.getId())
-                .type(activity.getType())
-                .quantityChange(activity.getQuantityChange())
-                .description(activity.getDescription())
-                .createdAt(activity.getCreatedAt())
+                .id(row.id())
+                .eventType(eventType)
+                .movementType(row.movementType())
+                .quantity(row.quantity())
+                .resultingQuantity(row.resultingQuantity())
+                .unit(row.unit())
+                .reasonCode(row.reasonCode())
+                .note(row.note())
+                .createdBy(row.createdBy())
+                .purchaseOrderId(row.purchaseOrderId())
+                .purchaseOrderNumber(row.purchaseOrderNumber())
+                .purchaseOrderStatus(row.purchaseOrderStatus())
+                .purchaseOrderLineId(row.purchaseOrderLineId())
+                .purchaseOrderLineQtyOrdered(row.purchaseOrderLineQtyOrdered())
+                .purchaseOrderLineQtyReceived(row.purchaseOrderLineQtyReceived())
+                .purchaseOrderLineUnit(row.purchaseOrderLineUnit())
+                .itemEventType(row.itemEventType())
+                .description(buildDescription(row, eventType))
+                .createdAt(row.createdAt())
                 .build();
+    }
+
+    private ItemActivityEventType determineEventType(ItemActivityQueryRepository.ItemActivityRow row) {
+        if (row.source() == ItemActivityQueryRepository.ItemActivitySource.MOVEMENT) {
+            return row.purchaseOrderId() != null
+                    ? ItemActivityEventType.PURCHASE_ORDER_RECEIPT
+                    : ItemActivityEventType.STOCK_MOVEMENT;
+        }
+        return ItemActivityEventType.ITEM_EVENT;
+    }
+
+    private String buildDescription(ItemActivityQueryRepository.ItemActivityRow row, ItemActivityEventType eventType) {
+        if (eventType == ItemActivityEventType.ITEM_EVENT) {
+            return row.itemEventDescription();
+        }
+        if (eventType == ItemActivityEventType.PURCHASE_ORDER_RECEIPT) {
+            StringBuilder builder = new StringBuilder();
+            if (row.quantity() != null) {
+                builder.append("Received ").append(row.quantity());
+                if (row.unit() != null) {
+                    builder.append(' ').append(row.unit());
+                }
+            }
+            if (row.purchaseOrderNumber() != null) {
+                if (builder.length() > 0) {
+                    builder.append(" from PO ");
+                } else {
+                    builder.append("PO ");
+                }
+                builder.append(row.purchaseOrderNumber());
+            }
+            if (row.purchaseOrderLineId() != null) {
+                builder.append(" (Line ").append(row.purchaseOrderLineId()).append(')');
+            }
+            String composed = builder.toString();
+            if (!composed.isEmpty()) {
+                return composed;
+            }
+        }
+        if (row.note() != null && !row.note().isBlank()) {
+            return row.note();
+        }
+        return row.reasonCode();
     }
 
     private void assignPrimarySupplier(Item item, Long supplierId) {
