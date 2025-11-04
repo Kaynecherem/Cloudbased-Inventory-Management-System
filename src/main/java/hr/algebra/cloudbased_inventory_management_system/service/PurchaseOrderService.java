@@ -185,6 +185,8 @@ public class PurchaseOrderService {
                     .unit(line.getUnit())
                     .reasonCode(RECEIPT_REASON_CODE)
                     .note(buildReceiptNote(order, line))
+                    .purchaseOrderId(order.getId())
+                    .purchaseOrderLineId(line.getId())
                     .build();
             movementService.recordMovement(movementRequest);
         }

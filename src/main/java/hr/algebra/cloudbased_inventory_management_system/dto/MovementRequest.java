@@ -39,5 +39,9 @@ public class MovementRequest {
 
     @Size(max = 100)
     private String clientRequestId;
+
+    private Long purchaseOrderId;
+
+    private Long purchaseOrderLineId;
 }
 
