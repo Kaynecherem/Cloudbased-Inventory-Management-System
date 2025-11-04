@@ -1,20 +1,22 @@
 package hr.algebra.cloudbased_inventory_management_system.service;
 
+import hr.algebra.cloudbased_inventory_management_system.dto.MovementRequest;
 import hr.algebra.cloudbased_inventory_management_system.dto.PageResponse;
 import hr.algebra.cloudbased_inventory_management_system.dto.PurchaseOrderLineRequest;
 import hr.algebra.cloudbased_inventory_management_system.dto.PurchaseOrderLineResponse;
 import hr.algebra.cloudbased_inventory_management_system.dto.PurchaseOrderReceiveRequest;
 import hr.algebra.cloudbased_inventory_management_system.dto.PurchaseOrderRequest;
 import hr.algebra.cloudbased_inventory_management_system.dto.PurchaseOrderResponse;
-import hr.algebra.cloudbased_inventory_management_system.dto.MovementRequest;
 import hr.algebra.cloudbased_inventory_management_system.entity.Item;
 import hr.algebra.cloudbased_inventory_management_system.entity.MovementType;
 import hr.algebra.cloudbased_inventory_management_system.entity.PurchaseOrder;
 import hr.algebra.cloudbased_inventory_management_system.entity.PurchaseOrderLine;
+import hr.algebra.cloudbased_inventory_management_system.entity.PurchaseOrderNumberSequence;
 import hr.algebra.cloudbased_inventory_management_system.entity.PurchaseOrderStatus;
 import hr.algebra.cloudbased_inventory_management_system.entity.Supplier;
 import hr.algebra.cloudbased_inventory_management_system.entity.User;
 import hr.algebra.cloudbased_inventory_management_system.repository.ItemRepository;
+import hr.algebra.cloudbased_inventory_management_system.repository.PurchaseOrderNumberSequenceRepository;
 import hr.algebra.cloudbased_inventory_management_system.repository.PurchaseOrderRepository;
 import hr.algebra.cloudbased_inventory_management_system.repository.PurchaseOrderSpecifications;
 import hr.algebra.cloudbased_inventory_management_system.repository.SupplierRepository;
@@ -30,8 +32,10 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -39,17 +43,19 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class PurchaseOrderService {
 
-    private static final String RECEIPT_REASON_CODE = "PO_RECEIPT";
+    private static final String RECEIPT_REASON_CODE = "PO_RECEIVE";
     private static final int MAX_NOTE_LENGTH = 500;
+    private static final DateTimeFormatter ORDER_NUMBER_DATE_FORMATTER =
+            DateTimeFormatter.ofPattern("yyyyMMdd").withLocale(Locale.ROOT);
 
     private final PurchaseOrderRepository purchaseOrderRepository;
+    private final PurchaseOrderNumberSequenceRepository purchaseOrderNumberSequenceRepository;
     private final SupplierRepository supplierRepository;
     private final ItemRepository itemRepository;
     private final MovementService movementService;
@@ -90,7 +96,7 @@ public class PurchaseOrderService {
         order.setSupplier(supplier);
         order.setCreatedBy(createdBy);
         order.setStatus(PurchaseOrderStatus.DRAFT);
-        order.setEta(request.getEta());
+        order.setEta(resolveEta(request.getEta(), supplier));
         order.setNumber(generateOrderNumber());
 
         mapLines(order, request.getLines());
@@ -112,7 +118,7 @@ public class PurchaseOrderService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Supplier not found"));
 
         order.setSupplier(supplier);
-        order.setEta(request.getEta());
+        order.setEta(resolveEta(request.getEta(), supplier));
 
         order.clearLines();
         mapLines(order, request.getLines());
@@ -185,7 +191,7 @@ public class PurchaseOrderService {
 
         boolean allReceived = order.getLines().stream()
                 .allMatch(line -> line.getQtyReceived().compareTo(line.getQtyOrdered()) >= 0);
-        order.setStatus(allReceived ? PurchaseOrderStatus.COMPLETED : PurchaseOrderStatus.PARTIALLY_RECEIVED);
+        order.setStatus(allReceived ? PurchaseOrderStatus.RECEIVED : PurchaseOrderStatus.PARTIALLY_RECEIVED);
 
         PurchaseOrder saved = purchaseOrderRepository.save(order);
         return toResponse(saved);
@@ -196,16 +202,31 @@ public class PurchaseOrderService {
         PurchaseOrder order = purchaseOrderRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Purchase order not found"));
 
-        if (order.getStatus() == PurchaseOrderStatus.COMPLETED) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Completed purchase orders cannot be cancelled");
+        if (order.getStatus() != PurchaseOrderStatus.PENDING) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Only pending purchase orders can be cancelled");
         }
-        if (order.getStatus() == PurchaseOrderStatus.CANCELLED) {
-            return toResponse(order);
+
+        List<PurchaseOrderLine> lines = order.getLines();
+        boolean hasReceivedQuantities = lines != null && lines.stream()
+                .anyMatch(line -> line.getQtyReceived() != null && line.getQtyReceived().compareTo(BigDecimal.ZERO) > 0);
+        if (hasReceivedQuantities) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Cannot cancel a purchase order with received quantities");
         }
 
         order.setStatus(PurchaseOrderStatus.CANCELLED);
         PurchaseOrder saved = purchaseOrderRepository.save(order);
         return toResponse(saved);
+    }
+
+    private Instant resolveEta(Instant requestedEta, Supplier supplier) {
+        if (requestedEta != null) {
+            return requestedEta;
+        }
+        Integer leadTimeDays = supplier.getLeadTimeDays();
+        if (leadTimeDays == null || leadTimeDays <= 0) {
+            return null;
+        }
+        return Instant.now().plus(leadTimeDays, ChronoUnit.DAYS);
     }
 
     private void mapLines(PurchaseOrder order, List<PurchaseOrderLineRequest> lineRequests) {
@@ -331,12 +352,17 @@ public class PurchaseOrderService {
     }
 
     private String generateOrderNumber() {
-        String prefix = "PO-" + DateTimeFormatter.ofPattern("yyyyMMdd").withLocale(Locale.ROOT)
-                .withZone(ZoneId.systemDefault()).format(Instant.now());
-        String candidate;
-        do {
-            candidate = prefix + "-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase(Locale.ROOT);
-        } while (purchaseOrderRepository.existsByNumber(candidate));
-        return candidate;
+        ZoneId zoneId = ZoneId.systemDefault();
+        LocalDate today = LocalDate.now(zoneId);
+
+        PurchaseOrderNumberSequence sequence = purchaseOrderNumberSequenceRepository
+                .findBySequenceDateForUpdate(today)
+                .orElseGet(() -> PurchaseOrderNumberSequence.initialize(today));
+
+        long sequenceValue = sequence.getAndIncrement();
+        purchaseOrderNumberSequenceRepository.saveAndFlush(sequence);
+
+        String datePart = ORDER_NUMBER_DATE_FORMATTER.format(today);
+        return String.format(Locale.ROOT, "PO-%s-%04d", datePart, sequenceValue);
     }
 }
