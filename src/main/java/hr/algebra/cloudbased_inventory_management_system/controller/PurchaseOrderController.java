@@ -14,6 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
@@ -32,6 +33,7 @@ public class PurchaseOrderController {
     private final PurchaseOrderService purchaseOrderService;
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('MANAGER','STAFF')")
     public PageResponse<PurchaseOrderResponse> getPurchaseOrders(
             @RequestParam(required = false) PurchaseOrderStatus status,
             @RequestParam(required = false) Long supplierId,
@@ -45,27 +47,32 @@ public class PurchaseOrderController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('MANAGER','STAFF')")
     public PurchaseOrderResponse getPurchaseOrder(@PathVariable Long id) {
         return purchaseOrderService.getPurchaseOrder(id);
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('MANAGER')")
     public ResponseEntity<PurchaseOrderResponse> createPurchaseOrder(@Valid @RequestBody PurchaseOrderRequest request) {
         PurchaseOrderResponse response = purchaseOrderService.createPurchaseOrder(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('MANAGER')")
     public PurchaseOrderResponse updatePurchaseOrder(@PathVariable Long id, @Valid @RequestBody PurchaseOrderRequest request) {
         return purchaseOrderService.updatePurchaseOrder(id, request);
     }
 
     @PostMapping("/{id}/submit")
+    @PreAuthorize("hasRole('MANAGER')")
     public PurchaseOrderResponse submitPurchaseOrder(@PathVariable Long id) {
         return purchaseOrderService.submitPurchaseOrder(id);
     }
 
     @PostMapping("/{id}/receive")
+    @PreAuthorize("hasRole('MANAGER')")
     public PurchaseOrderResponse receivePurchaseOrder(
             @PathVariable Long id,
             @Valid @RequestBody List<PurchaseOrderReceiveRequest> requests
@@ -74,6 +81,7 @@ public class PurchaseOrderController {
     }
 
     @PostMapping("/{id}/cancel")
+    @PreAuthorize("hasRole('MANAGER')")
     public PurchaseOrderResponse cancelPurchaseOrder(@PathVariable Long id) {
         return purchaseOrderService.cancelPurchaseOrder(id);
     }
