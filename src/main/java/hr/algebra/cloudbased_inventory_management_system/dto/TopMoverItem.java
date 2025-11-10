@@ -9,24 +9,23 @@ public class TopMoverItem {
     private final Long itemId;
     private final String sku;
     private final String name;
-    private final BigDecimal totalMovement;
     private final BigDecimal totalIn;
     private final BigDecimal totalOut;
+    private final BigDecimal totalMovement;
 
     public TopMoverItem(
             Long itemId,
             String sku,
             String name,
-            BigDecimal totalMovement,
             BigDecimal totalIn,
             BigDecimal totalOut
     ) {
         this.itemId = itemId;
         this.sku = sku;
         this.name = name;
-        this.totalMovement = normalize(totalMovement);
         this.totalIn = normalize(totalIn);
         this.totalOut = normalize(totalOut);
+        this.totalMovement = normalize(this.totalIn.add(this.totalOut));
     }
 
     private BigDecimal normalize(BigDecimal value) {

@@ -4,11 +4,11 @@ import hr.algebra.cloudbased_inventory_management_system.dto.TopMoverItem;
 import hr.algebra.cloudbased_inventory_management_system.dto.UsageReportItem;
 import hr.algebra.cloudbased_inventory_management_system.service.ReportService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.Resource;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import java.time.Instant;
 import java.util.List;
@@ -36,19 +36,21 @@ public class ReportController {
     public List<TopMoverItem> getTopMovers(
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant from,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant to,
-            @RequestParam(required = false) Integer limit
+            @RequestParam(required = false) Integer limit,
+            @RequestParam(required = false, defaultValue = "movement") String orderBy
     ) {
-        return reportService.getTopMovers(from, to, limit);
+        return reportService.getTopMovers(from, to, limit, orderBy);
     }
 
     @GetMapping(value = "/export.csv", produces = "text/csv")
     @PreAuthorize("hasRole('MANAGER')")
-    public ResponseEntity<Resource> exportReport(
+    public ResponseEntity<StreamingResponseBody> exportReport(
             @RequestParam String type,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant from,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant to,
-            @RequestParam(required = false) Integer limit
+            @RequestParam(required = false) Integer limit,
+            @RequestParam(required = false, defaultValue = "movement") String orderBy
     ) {
-        return reportService.exportCsv(type, from, to, limit);
+        return reportService.exportCsv(type, from, to, limit, orderBy);
     }
 }
