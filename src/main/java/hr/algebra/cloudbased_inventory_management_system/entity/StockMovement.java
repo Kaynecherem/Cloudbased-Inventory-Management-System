@@ -11,7 +11,8 @@ import java.time.Instant;
 @Table(
         name = "stock_movements",
         indexes = {
-                @Index(name = "ux_stock_movements_client_request_id", columnList = "client_request_id", unique = true)
+                @Index(name = "ux_stock_movements_client_request_id", columnList = "client_request_id", unique = true),
+                @Index(name = "idx_stock_movements_item_created_at", columnList = "item_id, created_at")
         }
 )
 @Getter
