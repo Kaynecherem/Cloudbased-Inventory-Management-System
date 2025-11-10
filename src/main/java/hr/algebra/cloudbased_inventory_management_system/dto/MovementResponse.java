@@ -21,6 +21,7 @@ public class MovementResponse {
     String note;
     String clientRequestId;
     String createdBy;
+    String updatedBy;
     Long purchaseOrderId;
     String purchaseOrderNumber;
     Long purchaseOrderLineId;

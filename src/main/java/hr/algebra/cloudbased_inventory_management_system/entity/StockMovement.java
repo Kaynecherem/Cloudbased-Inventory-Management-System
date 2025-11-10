@@ -55,6 +55,9 @@ public class StockMovement {
     @Column(nullable = false, length = 150, updatable = false)
     private String createdBy;
 
+    @Column(name = "updated_by", nullable = false, length = 150)
+    private String updatedBy;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "po_id")
     private PurchaseOrder purchaseOrder;
@@ -66,5 +69,19 @@ public class StockMovement {
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
     private Instant createdAt;
+
+    @PrePersist
+    void onCreate() {
+        if (updatedBy == null) {
+            updatedBy = createdBy != null ? createdBy : "system";
+        }
+    }
+
+    @PreUpdate
+    void onUpdate() {
+        if (updatedBy == null) {
+            updatedBy = createdBy != null ? createdBy : "system";
+        }
+    }
 }
 

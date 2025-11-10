@@ -19,9 +19,6 @@ import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,6 +41,7 @@ public class MovementService {
     private final PurchaseOrderRepository purchaseOrderRepository;
     private final PurchaseOrderLineRepository purchaseOrderLineRepository;
     private final TransactionTemplate transactionTemplate;
+    private final AuditContext auditContext;
 
     public MovementService(
             ItemRepository itemRepository,
@@ -51,7 +49,8 @@ public class MovementService {
             ReferenceDataRepository referenceDataRepository,
             PurchaseOrderRepository purchaseOrderRepository,
             PurchaseOrderLineRepository purchaseOrderLineRepository,
-            PlatformTransactionManager transactionManager
+            PlatformTransactionManager transactionManager,
+            AuditContext auditContext
     ) {
         this.itemRepository = itemRepository;
         this.stockMovementRepository = stockMovementRepository;
@@ -59,6 +58,7 @@ public class MovementService {
         this.purchaseOrderRepository = purchaseOrderRepository;
         this.purchaseOrderLineRepository = purchaseOrderLineRepository;
         this.transactionTemplate = new TransactionTemplate(transactionManager);
+        this.auditContext = auditContext;
     }
 
     @Transactional(readOnly = true)
@@ -118,7 +118,7 @@ public class MovementService {
         item.setCurrentQty(resultingQty);
         itemRepository.saveAndFlush(item);
 
-        String createdBy = resolveCurrentUsername();
+        String createdBy = auditContext.getCurrentAuditor();
 
         PurchaseOrderLine purchaseOrderLine = resolvePurchaseOrderLine(request, item);
         PurchaseOrder purchaseOrder = resolvePurchaseOrder(request, purchaseOrderLine);
@@ -133,6 +133,7 @@ public class MovementService {
                 .note(note)
                 .clientRequestId(clientRequestId)
                 .createdBy(createdBy)
+                .updatedBy(createdBy)
                 .purchaseOrder(purchaseOrder)
                 .purchaseOrderLine(purchaseOrderLine)
                 .build();
@@ -174,6 +175,7 @@ public class MovementService {
                 .note(movement.getNote())
                 .clientRequestId(movement.getClientRequestId())
                 .createdBy(movement.getCreatedBy())
+                .updatedBy(movement.getUpdatedBy())
                 .purchaseOrderId(movement.getPurchaseOrder() != null ? movement.getPurchaseOrder().getId() : null)
                 .purchaseOrderNumber(movement.getPurchaseOrder() != null ? movement.getPurchaseOrder().getNumber() : null)
                 .purchaseOrderLineId(movement.getPurchaseOrderLine() != null ? movement.getPurchaseOrderLine().getId() : null)
@@ -240,18 +242,6 @@ public class MovementService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unknown reason code");
         }
         return sanitized;
-    }
-
-    private String resolveCurrentUsername() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !authentication.isAuthenticated() || authentication instanceof AnonymousAuthenticationToken) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unable to resolve current user");
-        }
-        String username = sanitize(authentication.getName());
-        if (!StringUtils.hasText(username)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unable to resolve current user");
-        }
-        return username;
     }
 
     private String sanitize(String value) {

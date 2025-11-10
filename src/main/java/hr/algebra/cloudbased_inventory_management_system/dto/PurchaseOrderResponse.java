@@ -16,8 +16,8 @@ public class PurchaseOrderResponse {
     String supplierName;
     PurchaseOrderStatus status;
     Instant eta;
-    Long createdById;
-    String createdByName;
+    String createdBy;
+    String updatedBy;
     Instant createdAt;
     Instant updatedAt;
     List<PurchaseOrderLineResponse> lines;

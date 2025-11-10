@@ -20,6 +20,8 @@ public class ItemResponse {
     Long locationId;
     Long primarySupplierId;
     Boolean isActive;
+    String createdBy;
+    String updatedBy;
     Instant createdAt;
     Instant updatedAt;
     List<ItemSupplierResponse> alternateSuppliers;

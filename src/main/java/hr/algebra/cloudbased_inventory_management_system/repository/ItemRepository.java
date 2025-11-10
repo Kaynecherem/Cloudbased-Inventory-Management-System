@@ -30,4 +30,6 @@ public interface ItemRepository extends JpaRepository<Item, Long>, JpaSpecificat
     boolean existsByUnitIgnoreCase(String unit);
 
     boolean existsByCategoryIgnoreCase(String category);
+
+    boolean existsByPrimarySupplierIdAndIsActiveTrue(Long supplierId);
 }

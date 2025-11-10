@@ -46,6 +46,8 @@ public class ItemMapper {
                 .locationId(item.getLocationId())
                 .primarySupplierId(item.getPrimarySupplierId())
                 .isActive(item.getIsActive())
+                .createdBy(item.getCreatedBy())
+                .updatedBy(item.getUpdatedBy())
                 .createdAt(item.getCreatedAt())
                 .updatedAt(item.getUpdatedAt())
                 .alternateSuppliers(mapAlternateSuppliers(item))

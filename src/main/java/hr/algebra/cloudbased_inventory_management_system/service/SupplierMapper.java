@@ -39,6 +39,8 @@ public class SupplierMapper {
                 .address(supplier.getAddress())
                 .notes(supplier.getNotes())
                 .isActive(supplier.getIsActive())
+                .createdBy(supplier.getCreatedBy())
+                .updatedBy(supplier.getUpdatedBy())
                 .createdAt(supplier.getCreatedAt())
                 .updatedAt(supplier.getUpdatedAt())
                 .build();

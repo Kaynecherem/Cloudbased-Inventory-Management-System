@@ -14,10 +14,10 @@ public interface PurchaseOrderRepository extends JpaRepository<PurchaseOrder, Lo
 
     boolean existsByNumber(String number);
 
-    @EntityGraph(attributePaths = {"supplier", "createdBy", "lines", "lines.item"})
+    @EntityGraph(attributePaths = {"supplier", "lines", "lines.item"})
     Optional<PurchaseOrder> findById(Long id);
 
     @Override
-    @EntityGraph(attributePaths = {"supplier", "createdBy", "lines", "lines.item"})
+    @EntityGraph(attributePaths = {"supplier", "lines", "lines.item"})
     Page<PurchaseOrder> findAll(Specification<PurchaseOrder> spec, Pageable pageable);
 }
