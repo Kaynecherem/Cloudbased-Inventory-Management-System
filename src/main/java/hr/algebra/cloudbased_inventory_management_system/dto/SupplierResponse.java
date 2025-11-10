@@ -17,6 +17,8 @@ public class SupplierResponse {
     String address;
     String notes;
     Boolean isActive;
+    String createdBy;
+    String updatedBy;
     Instant createdAt;
     Instant updatedAt;
 }

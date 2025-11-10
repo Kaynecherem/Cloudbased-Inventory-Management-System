@@ -48,4 +48,27 @@ public class PurchaseOrderLine {
     @Version
     @Column(nullable = false)
     private Long version;
+
+    @Column(name = "created_by", nullable = false, length = 150, updatable = false)
+    private String createdBy;
+
+    @Column(name = "updated_by", nullable = false, length = 150)
+    private String updatedBy;
+
+    @PrePersist
+    void onCreate() {
+        if (createdBy == null) {
+            createdBy = "system";
+        }
+        if (updatedBy == null) {
+            updatedBy = createdBy;
+        }
+    }
+
+    @PreUpdate
+    void onUpdate() {
+        if (updatedBy == null) {
+            updatedBy = createdBy != null ? createdBy : "system";
+        }
+    }
 }

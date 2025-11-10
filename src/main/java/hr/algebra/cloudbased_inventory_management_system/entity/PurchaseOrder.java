@@ -44,9 +44,11 @@ public class PurchaseOrder {
     @Column(name = "eta")
     private Instant eta;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "created_by", nullable = false, updatable = false)
-    private User createdBy;
+    @Column(name = "created_by", nullable = false, length = 150, updatable = false)
+    private String createdBy;
+
+    @Column(name = "updated_by", nullable = false, length = 150)
+    private String updatedBy;
 
     @Column(nullable = false, updatable = false)
     private Instant createdAt;
@@ -70,11 +72,20 @@ public class PurchaseOrder {
         if (this.status == null) {
             this.status = PurchaseOrderStatus.DRAFT;
         }
+        if (this.createdBy == null) {
+            this.createdBy = "system";
+        }
+        if (this.updatedBy == null) {
+            this.updatedBy = this.createdBy;
+        }
     }
 
     @PreUpdate
     void onUpdate() {
         this.updatedAt = Instant.now();
+        if (this.updatedBy == null) {
+            this.updatedBy = this.createdBy != null ? this.createdBy : "system";
+        }
     }
 
     public void addLine(PurchaseOrderLine line) {

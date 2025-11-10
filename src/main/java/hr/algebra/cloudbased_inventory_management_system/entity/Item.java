@@ -57,6 +57,12 @@ public class Item {
     @Column(nullable = false)
     private Boolean isActive;
 
+    @Column(name = "created_by", nullable = false, length = 150, updatable = false)
+    private String createdBy;
+
+    @Column(name = "updated_by", nullable = false, length = 150)
+    private String updatedBy;
+
     @Column(nullable = false, updatable = false)
     private Instant createdAt;
 
@@ -80,11 +86,20 @@ public class Item {
         if (isActive == null) {
             isActive = Boolean.TRUE;
         }
+        if (createdBy == null) {
+            createdBy = "system";
+        }
+        if (updatedBy == null) {
+            updatedBy = createdBy;
+        }
     }
 
     @PreUpdate
     public void onUpdate() {
         updatedAt = Instant.now();
+        if (updatedBy == null) {
+            updatedBy = createdBy != null ? createdBy : "system";
+        }
     }
 
     public void assignPrimarySupplier(Supplier supplier) {

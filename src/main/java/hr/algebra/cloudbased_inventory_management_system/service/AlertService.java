@@ -37,7 +37,9 @@ public class AlertService {
                 .filter(id -> id != null && id > 0)
                 .collect(Collectors.toSet());
 
-        Map<Long, Supplier> suppliersById = supplierRepository.findAllById(supplierIds)
+        Map<Long, Supplier> suppliersById = supplierIds.isEmpty()
+                ? Map.of()
+                : supplierRepository.findByIdInAndIsActiveTrue(supplierIds)
                 .stream()
                 .collect(Collectors.toMap(Supplier::getId, Function.identity()));
 

@@ -15,4 +15,6 @@ public class PurchaseOrderLineResponse {
     BigDecimal qtyReceived;
     String unit;
     BigDecimal price;
+    String createdBy;
+    String updatedBy;
 }

@@ -14,7 +14,6 @@ import hr.algebra.cloudbased_inventory_management_system.entity.PurchaseOrderLin
 import hr.algebra.cloudbased_inventory_management_system.entity.PurchaseOrderNumberSequence;
 import hr.algebra.cloudbased_inventory_management_system.entity.PurchaseOrderStatus;
 import hr.algebra.cloudbased_inventory_management_system.entity.Supplier;
-import hr.algebra.cloudbased_inventory_management_system.entity.User;
 import hr.algebra.cloudbased_inventory_management_system.repository.ItemRepository;
 import hr.algebra.cloudbased_inventory_management_system.repository.PurchaseOrderNumberSequenceRepository;
 import hr.algebra.cloudbased_inventory_management_system.repository.PurchaseOrderRepository;
@@ -59,7 +58,7 @@ public class PurchaseOrderService {
     private final SupplierRepository supplierRepository;
     private final ItemRepository itemRepository;
     private final MovementService movementService;
-    private final UserService userService;
+    private final AuditContext auditContext;
 
     @Transactional(readOnly = true)
     public PageResponse<PurchaseOrderResponse> findPurchaseOrders(
@@ -87,19 +86,17 @@ public class PurchaseOrderService {
     public PurchaseOrderResponse createPurchaseOrder(@Valid PurchaseOrderRequest request) {
         Supplier supplier = supplierRepository.findByIdAndIsActiveTrue(request.getSupplierId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Supplier not found"));
-        User createdBy = userService.getCurrentUser();
-        if (createdBy == null) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unable to resolve current user");
-        }
+        String auditor = auditContext.getCurrentAuditor();
 
         PurchaseOrder order = new PurchaseOrder();
         order.setSupplier(supplier);
-        order.setCreatedBy(createdBy);
+        order.setCreatedBy(auditor);
+        order.setUpdatedBy(auditor);
         order.setStatus(PurchaseOrderStatus.DRAFT);
         order.setEta(resolveEta(request.getEta(), supplier));
         order.setNumber(generateOrderNumber());
 
-        mapLines(order, request.getLines());
+        mapLines(order, request.getLines(), auditor);
 
         PurchaseOrder saved = purchaseOrderRepository.save(order);
         return toResponse(saved);
@@ -119,9 +116,10 @@ public class PurchaseOrderService {
 
         order.setSupplier(supplier);
         order.setEta(resolveEta(request.getEta(), supplier));
+        order.setUpdatedBy(auditContext.getCurrentAuditor());
 
         order.clearLines();
-        mapLines(order, request.getLines());
+        mapLines(order, request.getLines(), order.getUpdatedBy());
 
         PurchaseOrder saved = purchaseOrderRepository.save(order);
         return toResponse(saved);
@@ -140,6 +138,7 @@ public class PurchaseOrderService {
         }
 
         order.setStatus(PurchaseOrderStatus.PENDING);
+        order.setUpdatedBy(auditContext.getCurrentAuditor());
         PurchaseOrder saved = purchaseOrderRepository.save(order);
         return toResponse(saved);
     }
@@ -158,6 +157,7 @@ public class PurchaseOrderService {
         }
 
         Map<Long, BigDecimal> quantities = aggregateQuantities(receiveRequests);
+        String auditor = auditContext.getCurrentAuditor();
 
         Map<Long, PurchaseOrderLine> lineIndex = order.getLines().stream()
                 .collect(Collectors.toMap(PurchaseOrderLine::getId, line -> line));
@@ -177,6 +177,7 @@ public class PurchaseOrderService {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Received quantity exceeds ordered quantity");
             }
             line.setQtyReceived(newTotal);
+            line.setUpdatedBy(auditor);
 
             MovementRequest movementRequest = MovementRequest.builder()
                     .itemId(line.getItem().getId())
@@ -194,6 +195,7 @@ public class PurchaseOrderService {
         boolean allReceived = order.getLines().stream()
                 .allMatch(line -> line.getQtyReceived().compareTo(line.getQtyOrdered()) >= 0);
         order.setStatus(allReceived ? PurchaseOrderStatus.RECEIVED : PurchaseOrderStatus.PARTIALLY_RECEIVED);
+        order.setUpdatedBy(auditor);
 
         PurchaseOrder saved = purchaseOrderRepository.save(order);
         return toResponse(saved);
@@ -216,6 +218,7 @@ public class PurchaseOrderService {
         }
 
         order.setStatus(PurchaseOrderStatus.CANCELLED);
+        order.setUpdatedBy(auditContext.getCurrentAuditor());
         PurchaseOrder saved = purchaseOrderRepository.save(order);
         return toResponse(saved);
     }
@@ -231,7 +234,7 @@ public class PurchaseOrderService {
         return Instant.now().plus(leadTimeDays, ChronoUnit.DAYS);
     }
 
-    private void mapLines(PurchaseOrder order, List<PurchaseOrderLineRequest> lineRequests) {
+    private void mapLines(PurchaseOrder order, List<PurchaseOrderLineRequest> lineRequests, String auditor) {
         if (lineRequests == null || lineRequests.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Purchase order requires at least one line");
         }
@@ -269,6 +272,8 @@ public class PurchaseOrderService {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Price cannot be negative");
             }
             line.setPrice(price);
+            line.setCreatedBy(auditor);
+            line.setUpdatedBy(auditor);
 
             order.addLine(line);
         }
@@ -309,6 +314,8 @@ public class PurchaseOrderService {
                     .qtyReceived(line.getQtyReceived())
                     .unit(line.getUnit())
                     .price(line.getPrice())
+                    .createdBy(line.getCreatedBy())
+                    .updatedBy(line.getUpdatedBy())
                     .build());
         }
 
@@ -319,27 +326,12 @@ public class PurchaseOrderService {
                 .supplierName(order.getSupplier().getName())
                 .status(order.getStatus())
                 .eta(order.getEta())
-                .createdById(order.getCreatedBy().getId())
-                .createdByName(buildUserName(order.getCreatedBy()))
+                .createdBy(order.getCreatedBy())
+                .updatedBy(order.getUpdatedBy())
                 .createdAt(order.getCreatedAt())
                 .updatedAt(order.getUpdatedAt())
                 .lines(lineResponses)
                 .build();
-    }
-
-    private String buildUserName(User user) {
-        String firstName = sanitize(user.getFirstName());
-        String lastName = sanitize(user.getLastName());
-        if (StringUtils.hasText(firstName) && StringUtils.hasText(lastName)) {
-            return firstName + " " + lastName;
-        }
-        if (StringUtils.hasText(firstName)) {
-            return firstName;
-        }
-        if (StringUtils.hasText(lastName)) {
-            return lastName;
-        }
-        return user.getUsername();
     }
 
     private BigDecimal normalize(BigDecimal value) {

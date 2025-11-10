@@ -3,6 +3,7 @@ package hr.algebra.cloudbased_inventory_management_system.service;
 import hr.algebra.cloudbased_inventory_management_system.dto.SupplierRequest;
 import hr.algebra.cloudbased_inventory_management_system.dto.SupplierResponse;
 import hr.algebra.cloudbased_inventory_management_system.entity.Supplier;
+import hr.algebra.cloudbased_inventory_management_system.repository.ItemRepository;
 import hr.algebra.cloudbased_inventory_management_system.repository.SupplierRepository;
 import hr.algebra.cloudbased_inventory_management_system.repository.SupplierSpecifications;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +19,9 @@ import org.springframework.web.server.ResponseStatusException;
 public class SupplierService {
 
     private final SupplierRepository supplierRepository;
+    private final ItemRepository itemRepository;
     private final SupplierMapper supplierMapper;
+    private final AuditContext auditContext;
 
     @Transactional(readOnly = true)
     public Page<SupplierResponse> findSuppliers(String search, Pageable pageable) {
@@ -39,6 +42,9 @@ public class SupplierService {
         if (supplier.getIsActive() == null) {
             supplier.setIsActive(Boolean.TRUE);
         }
+        String auditor = auditContext.getCurrentAuditor();
+        supplier.setCreatedBy(auditor);
+        supplier.setUpdatedBy(auditor);
         Supplier saved = supplierRepository.save(supplier);
         return supplierMapper.toResponse(saved);
     }
@@ -49,6 +55,7 @@ public class SupplierService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Supplier not found"));
 
         supplierMapper.updateEntity(existing, request);
+        existing.setUpdatedBy(auditContext.getCurrentAuditor());
         Supplier saved = supplierRepository.save(existing);
         return supplierMapper.toResponse(saved);
     }
@@ -58,7 +65,12 @@ public class SupplierService {
         Supplier existing = supplierRepository.findByIdAndIsActiveTrue(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Supplier not found"));
 
+        if (itemRepository.existsByPrimarySupplierIdAndIsActiveTrue(id)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Supplier is referenced by active items");
+        }
+
         existing.setIsActive(Boolean.FALSE);
+        existing.setUpdatedBy(auditContext.getCurrentAuditor());
         supplierRepository.save(existing);
     }
 }

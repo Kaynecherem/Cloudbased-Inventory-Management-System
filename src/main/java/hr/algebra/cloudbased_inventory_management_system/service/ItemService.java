@@ -46,6 +46,7 @@ public class ItemService {
     private final ItemMapper itemMapper;
     private final PurchaseOrderLineRepository purchaseOrderLineRepository;
     private final SupplierRepository supplierRepository;
+    private final AuditContext auditContext;
 
     private static final Set<PurchaseOrderStatus> BLOCKING_PURCHASE_ORDER_STATUSES =
             EnumSet.of(PurchaseOrderStatus.DRAFT, PurchaseOrderStatus.PENDING, PurchaseOrderStatus.PARTIALLY_RECEIVED);
@@ -73,6 +74,9 @@ public class ItemService {
         if (item.getIsActive() == null) {
             item.setIsActive(Boolean.TRUE);
         }
+        String auditor = auditContext.getCurrentAuditor();
+        item.setCreatedBy(auditor);
+        item.setUpdatedBy(auditor);
         assignPrimarySupplier(item, request.getPrimarySupplierId());
         applyAlternateSuppliers(item, request.getAlternateSuppliers());
         Item saved = itemRepository.save(item);
@@ -94,6 +98,7 @@ public class ItemService {
         itemMapper.updateEntity(existing, request);
         assignPrimarySupplier(existing, request.getPrimarySupplierId());
         applyAlternateSuppliers(existing, request.getAlternateSuppliers());
+        existing.setUpdatedBy(auditContext.getCurrentAuditor());
         Item saved = itemRepository.save(existing);
 
         BigDecimal quantityChange = calculateChange(previousQty, saved.getCurrentQty());
@@ -109,6 +114,7 @@ public class ItemService {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Item is referenced by open purchase orders");
         }
         existing.setIsActive(Boolean.FALSE);
+        existing.setUpdatedBy(auditContext.getCurrentAuditor());
         Item saved = itemRepository.save(existing);
         logActivity(saved, ItemActivityType.DELETED, null, "Item deactivated");
     }
