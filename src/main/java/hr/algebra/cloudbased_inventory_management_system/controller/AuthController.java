@@ -4,9 +4,7 @@ import hr.algebra.cloudbased_inventory_management_system.dto.AuthResponse;
 import hr.algebra.cloudbased_inventory_management_system.dto.ForgotPasswordRequest;
 import hr.algebra.cloudbased_inventory_management_system.dto.LoginRequest;
 import hr.algebra.cloudbased_inventory_management_system.dto.RefreshTokenRequest;
-import hr.algebra.cloudbased_inventory_management_system.entity.User;
 import hr.algebra.cloudbased_inventory_management_system.service.AuthService;
-import hr.algebra.cloudbased_inventory_management_system.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +21,6 @@ import java.util.Map;
 public class AuthController {
 
     private final AuthService authService;
-    private final UserService userService;
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
@@ -37,8 +34,7 @@ public class AuthController {
 
     @PostMapping("/forgot")
     public ResponseEntity<Map<String, String>> forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
-        User user = userService.getByUsernameOrEmail(request.getIdentifier());
-        String message = String.format("Password reset instructions sent for user %s", user.getEmail());
-        return ResponseEntity.ok(Map.of("message", message));
+        authService.initiatePasswordReset(request.getEmail());
+        return ResponseEntity.ok(Map.of("message", "If an account exists for that email, password reset instructions have been sent."));
     }
 }

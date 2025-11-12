@@ -34,7 +34,9 @@ public class PurchaseOrder {
     private String number;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "supplier_id", nullable = false)
+    @JoinColumn(name = "supplier_id", nullable = false,
+            foreignKey = @ForeignKey(name = "fk_purchase_orders_supplier",
+                    foreignKeyDefinition = "FOREIGN KEY (supplier_id) REFERENCES suppliers(id) ON UPDATE RESTRICT ON DELETE RESTRICT"))
     private Supplier supplier;
 
     @Enumerated(EnumType.STRING)

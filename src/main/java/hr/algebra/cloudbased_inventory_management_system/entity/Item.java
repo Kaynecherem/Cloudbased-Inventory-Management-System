@@ -51,7 +51,11 @@ public class Item {
     private Long primarySupplierId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "primary_supplier_id", foreignKey = @ForeignKey(name = "fk_items_primary_supplier"), insertable = false, updatable = false)
+    @JoinColumn(name = "primary_supplier_id",
+            foreignKey = @ForeignKey(name = "fk_items_primary_supplier",
+                    foreignKeyDefinition = "FOREIGN KEY (primary_supplier_id) REFERENCES suppliers(id) ON UPDATE RESTRICT ON DELETE RESTRICT"),
+            insertable = false,
+            updatable = false)
     private Supplier primarySupplier;
 
     @Column(nullable = false)
