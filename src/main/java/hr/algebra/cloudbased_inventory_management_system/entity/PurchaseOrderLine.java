@@ -26,11 +26,15 @@ public class PurchaseOrderLine {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "po_id", nullable = false)
+    @JoinColumn(name = "po_id", nullable = false,
+            foreignKey = @ForeignKey(name = "fk_purchase_order_lines_po",
+                    foreignKeyDefinition = "FOREIGN KEY (po_id) REFERENCES purchase_orders(id) ON UPDATE RESTRICT ON DELETE RESTRICT"))
     private PurchaseOrder purchaseOrder;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "item_id", nullable = false)
+    @JoinColumn(name = "item_id", nullable = false,
+            foreignKey = @ForeignKey(name = "fk_purchase_order_lines_item",
+                    foreignKeyDefinition = "FOREIGN KEY (item_id) REFERENCES items(id) ON UPDATE RESTRICT ON DELETE RESTRICT"))
     private Item item;
 
     @Column(name = "qty_ordered", precision = 19, scale = 2, nullable = false)

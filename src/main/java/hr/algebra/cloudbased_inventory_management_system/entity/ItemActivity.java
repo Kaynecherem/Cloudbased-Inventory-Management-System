@@ -20,7 +20,9 @@ public class ItemActivity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "item_id", nullable = false)
+    @JoinColumn(name = "item_id", nullable = false,
+            foreignKey = @ForeignKey(name = "fk_item_activities_item",
+                    foreignKeyDefinition = "FOREIGN KEY (item_id) REFERENCES items(id) ON UPDATE RESTRICT ON DELETE RESTRICT"))
     private Item item;
 
     @Enumerated(EnumType.STRING)

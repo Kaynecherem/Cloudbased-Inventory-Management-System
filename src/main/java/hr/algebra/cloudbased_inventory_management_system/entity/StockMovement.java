@@ -27,7 +27,9 @@ public class StockMovement {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "item_id", nullable = false)
+    @JoinColumn(name = "item_id", nullable = false,
+            foreignKey = @ForeignKey(name = "fk_stock_movements_item",
+                    foreignKeyDefinition = "FOREIGN KEY (item_id) REFERENCES items(id) ON UPDATE RESTRICT ON DELETE RESTRICT"))
     private Item item;
 
     @Enumerated(EnumType.STRING)
@@ -59,11 +61,15 @@ public class StockMovement {
     private String updatedBy;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "po_id")
+    @JoinColumn(name = "po_id",
+            foreignKey = @ForeignKey(name = "fk_stock_movements_po",
+                    foreignKeyDefinition = "FOREIGN KEY (po_id) REFERENCES purchase_orders(id) ON UPDATE RESTRICT ON DELETE RESTRICT"))
     private PurchaseOrder purchaseOrder;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "po_line_id")
+    @JoinColumn(name = "po_line_id",
+            foreignKey = @ForeignKey(name = "fk_stock_movements_po_line",
+                    foreignKeyDefinition = "FOREIGN KEY (po_line_id) REFERENCES purchase_order_lines(id) ON UPDATE RESTRICT ON DELETE RESTRICT"))
     private PurchaseOrderLine purchaseOrderLine;
 
     @CreationTimestamp

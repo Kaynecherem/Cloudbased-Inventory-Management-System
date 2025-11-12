@@ -6,6 +6,8 @@ import hr.algebra.cloudbased_inventory_management_system.dto.UserResponse;
 import hr.algebra.cloudbased_inventory_management_system.entity.User;
 import hr.algebra.cloudbased_inventory_management_system.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,10 +18,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class AuthService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AuthService.class);
 
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
@@ -69,5 +74,13 @@ public class AuthService {
                 .role(user.getRole())
                 .user(userMapper.toResponse(user))
                 .build();
+    }
+
+    @Transactional
+    public void initiatePasswordReset(String email) {
+        userRepository.findByEmail(email).ifPresentOrElse(user -> {
+            String token = UUID.randomUUID().toString();
+            LOGGER.info("Generated password reset token for {}: {}", user.getEmail(), token);
+        }, () -> LOGGER.info("Password reset requested for unknown email: {}", email));
     }
 }

@@ -10,11 +10,10 @@ public class UserMapper {
     public UserResponse toResponse(User user) {
         return UserResponse.builder()
                 .id(user.getId())
-                .firstName(user.getFirstName())
-                .lastName(user.getLastName())
-                .username(user.getUsername())
                 .email(user.getEmail())
                 .role(user.getRole())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
                 .build();
     }
 }

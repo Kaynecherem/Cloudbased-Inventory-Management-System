@@ -28,12 +28,16 @@ public class ItemSupplier {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @MapsId("itemId")
-    @JoinColumn(name = "item_id", nullable = false, foreignKey = @ForeignKey(name = "fk_item_suppliers_item"))
+    @JoinColumn(name = "item_id", nullable = false,
+            foreignKey = @ForeignKey(name = "fk_item_suppliers_item",
+                    foreignKeyDefinition = "FOREIGN KEY (item_id) REFERENCES items(id) ON UPDATE RESTRICT ON DELETE RESTRICT"))
     private Item item;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @MapsId("supplierId")
-    @JoinColumn(name = "supplier_id", nullable = false, foreignKey = @ForeignKey(name = "fk_item_suppliers_supplier"))
+    @JoinColumn(name = "supplier_id", nullable = false,
+            foreignKey = @ForeignKey(name = "fk_item_suppliers_supplier",
+                    foreignKeyDefinition = "FOREIGN KEY (supplier_id) REFERENCES suppliers(id) ON UPDATE RESTRICT ON DELETE RESTRICT"))
     private Supplier supplier;
 
     @Column(nullable = false)
