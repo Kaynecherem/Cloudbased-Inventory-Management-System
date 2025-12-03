@@ -4,12 +4,15 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Date;
 import java.util.Map;
@@ -18,12 +21,20 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
+    private static final Logger logger = LoggerFactory.getLogger(JwtService.class);
+    private static final String DEFAULT_SECRET = "5d828f9028f04b48a865e0e1f1283d1f5d828f9028f04b48a865e0e1f1283d1f";
+
     private final SecretKey secretKey;
     private final long jwtExpirationMs;
 
-    public JwtService(@Value("${security.jwt.secret}") String secret,
+    public JwtService(@Value("${security.jwt.secret:${JWT_SECRET:}}") String secret,
                       @Value("${security.jwt.expiration-ms:3600000}") long jwtExpirationMs) {
-        this.secretKey = Keys.hmacShaKeyFor(secret.getBytes());
+        String resolvedSecret = secret;
+        if (resolvedSecret == null || resolvedSecret.isBlank()) {
+            resolvedSecret = DEFAULT_SECRET;
+            logger.warn("Missing JWT secret configuration. Using default secret; please configure 'security.jwt.secret' or 'JWT_SECRET' in production.");
+        }
+        this.secretKey = Keys.hmacShaKeyFor(resolvedSecret.getBytes(StandardCharsets.UTF_8));
         this.jwtExpirationMs = jwtExpirationMs;
     }
 
