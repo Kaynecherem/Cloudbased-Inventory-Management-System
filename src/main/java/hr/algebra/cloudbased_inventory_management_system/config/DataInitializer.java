@@ -23,18 +23,23 @@ public class DataInitializer implements CommandLineRunner {
     }
 
     private void createUserIfNotExists(String username, String email, String firstName, String lastName, Role role) {
-        if (userRepository.existsByUsername(username) || userRepository.existsByEmail(email)) {
-            return;
-        }
-
-        User user = User.builder()
-                .username(username)
-                .email(email)
-                .firstName(firstName)
-                .lastName(lastName)
-                .role(role)
-                .password(passwordEncoder.encode("password"))
-                .build();
-        userRepository.save(user);
+        userRepository.findByUsernameOrEmail(username, email)
+                .ifPresentOrElse(existing -> {
+                    existing.setFirstName(firstName);
+                    existing.setLastName(lastName);
+                    existing.setRole(role);
+                    existing.setPassword(passwordEncoder.encode("password"));
+                    userRepository.save(existing);
+                }, () -> {
+                    User user = User.builder()
+                            .username(username)
+                            .email(email)
+                            .firstName(firstName)
+                            .lastName(lastName)
+                            .role(role)
+                            .password(passwordEncoder.encode("password"))
+                            .build();
+                    userRepository.save(user);
+                });
     }
 }
