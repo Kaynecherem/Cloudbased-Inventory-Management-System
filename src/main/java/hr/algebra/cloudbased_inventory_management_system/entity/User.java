@@ -65,7 +65,7 @@ public class User {
         if (base.isEmpty()) {
             base.append("user");
         }
-        base.append('-').append(UUID.randomUUID().toString().substring(0, 8));
+        base.append('-').append(UUID.randomUUID().toString(), 0, 8);
         return base.toString();
     }
 }
